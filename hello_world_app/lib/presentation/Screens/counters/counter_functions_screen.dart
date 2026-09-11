@@ -66,7 +66,6 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
           
           const SizedBox(height: 10), 
           
-          
           FloatingActionButton(
             onPressed: () {
               setState(() {
