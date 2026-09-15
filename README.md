@@ -2,6 +2,10 @@
 
 Repositorio de prácticas de la asignatura **Desarrollo Móvil Integral**, enfocado en el aprendizaje de Flutter y Dart para crear aplicaciones móviles multiplataforma.
 
+## Link Page
+
+[Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/)
+
 ## Datos de la asignatura
 
 | Campo | Información |
