@@ -1,21 +1,32 @@
-# Prácticas de la Asignatura de Desarrollo Móvil Integral
+# Prácticas de Desarrollo Móvil Integral
 
-## Ingeniería en Desarrollo y Gestión de Software
+Repositorio de prácticas de la asignatura **Desarrollo Móvil Integral**, enfocado en el aprendizaje de Flutter y Dart para crear aplicaciones móviles multiplataforma.
 
-**Docente:** M.T.I. Marco A. Ramirez Hernández  
-**Periodo:** Septiembre - Diciembre 2026
+## Datos de la asignatura
 
----
+| Campo | Información |
+|---|---|
+| Programa educativo | Ingeniería en Desarrollo y Gestión de Software |
+| Docente | M.T.I. Marco A. Ramírez Hernández |
+| Periodo | Septiembre – Diciembre 2026 |
 
-![alt text](image.png)
+## Objetivo del repositorio
 
-![alt text](image-1.png)
+Documentar las evidencias y el código desarrollado durante el curso. Las prácticas refuerzan conceptos de interfaz, estado, componentes reutilizables y ejecución de apps Flutter en distintas plataformas.
 
-![alt text](image-2.png)
+## Estructura general
 
-![alt text](image-3.png)
+```text
+Practicas_DMI_230629/
+├── hello_world_app/       # Proyecto Flutter de la práctica 2
+├── image.png              # Evidencias de las prácticas
+├── image-1.png
+├── image-2.png
+├── image-3.png
+└── README.md              # Documentación general
+```
 
-### Tabla de Prácticas de la Materia
+## Prácticas de la materia
 
 | No. | Nombre | Descripción | Potenciador | Estatus |
 |---|---|---|---|---|
