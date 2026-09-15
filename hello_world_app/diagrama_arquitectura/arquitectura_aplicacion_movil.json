@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura de la aplicación móvil",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "flujo-principal",
+        "label": "Flujo principal",
+        "focus": ["cliente-movil", "autenticacion-keycloak", "api-fastapi", "postgresql", "mongodb"],
+        "note": "Sigue la solicitud autenticada desde el cliente móvil hasta las capas de datos."
+      },
+      {
+        "id": "servicios-externos",
+        "label": "Servicios externos",
+        "focus": ["cliente-movil", "api-fastapi", "servicio-mapas"],
+        "note": "Muestra la obtención de mapas y la coordinación con la API."
+      },
+      {
+        "id": "desarrollo-y-versionado",
+        "label": "Desarrollo y versionado",
+        "focus": ["docker", "docker-compose", "git", "github", "api-fastapi", "postgresql", "mongodb"],
+        "note": "Resume el entorno local reproducible y el control de versiones."
+      }
+    ],
+    "viewBox": [1360, 860]
+  },
+  "components": [
+    {
+      "id": "cliente-movil",
+      "type": "frontend",
+      "label": "Cliente móvil",
+      "sublabel": "Aplicación Flutter",
+      "tag": "Usuario final",
+      "pos": [70, 310],
+      "size": [180, 74]
+    },
+    {
+      "id": "autenticacion-keycloak",
+      "type": "security",
+      "label": "Capa de autenticación",
+      "sublabel": "Keycloak · emisión de tokens",
+      "tag": "Zona de identidad",
+      "pos": [340, 140],
+      "size": [205, 74]
+    },
+    {
+      "id": "api-fastapi",
+      "type": "backend",
+      "label": "Capa de API",
+      "sublabel": "API REST con FastAPI",
+      "tag": "Servicios de aplicación",
+      "brand": "FastAPI",
+      "pos": [640, 310],
+      "size": [195, 74]
+    },
+    {
+      "id": "postgresql",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Datos relacionales",
+      "tag": "Capa de datos",
+      "brand": "PostgreSQL",
+      "pos": [1015, 230],
+      "size": [180, 70]
+    },
+    {
+      "id": "mongodb",
+      "type": "database",
+      "label": "MongoDB",
+      "sublabel": "Datos de documentos",
+      "tag": "Capa de datos",
+      "brand": "MongoDB",
+      "pos": [1015, 400],
+      "size": [180, 70]
+    },
+    {
+      "id": "servicio-mapas",
+      "type": "external",
+      "label": "Servicio de mapas",
+      "sublabel": "Leaflet · visualización cartográfica",
+      "tag": "Servicio externo",
+      "pos": [340, 490],
+      "size": [205, 74]
+    },
+    {
+      "id": "docker",
+      "type": "cloud",
+      "label": "Docker",
+      "sublabel": "Contenedores de desarrollo",
+      "tag": "Infraestructura de desarrollo",
+      "brand": "Docker",
+      "pos": [410, 690],
+      "size": [165, 66]
+    },
+    {
+      "id": "docker-compose",
+      "type": "cloud",
+      "label": "Docker Compose",
+      "sublabel": "Orquestación local",
+      "tag": "Infraestructura de desarrollo",
+      "pos": [650, 690],
+      "size": [185, 66]
+    },
+    {
+      "id": "git",
+      "type": "external",
+      "label": "Git",
+      "sublabel": "Control de versiones local",
+      "tag": "Control de versiones",
+      "pos": [915, 690],
+      "size": [155, 66]
+    },
+    {
+      "id": "github",
+      "type": "external",
+      "label": "GitHub",
+      "sublabel": "Repositorio remoto",
+      "tag": "Control de versiones",
+      "brand": "GitHub",
+      "pos": [1150, 690],
+      "size": [155, 66]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "Límite de confianza: dispositivo del usuario",
+      "wraps": ["cliente-movil"],
+      "pad": 28
+    },
+    {
+      "kind": "security-group",
+      "label": "Límite de confianza: plataforma de aplicación",
+      "wraps": ["autenticacion-keycloak", "api-fastapi", "postgresql", "mongodb"],
+      "pad": 38
+    },
+    {
+      "kind": "region",
+      "label": "Entorno de desarrollo local",
+      "wraps": ["docker", "docker-compose"],
+      "pad": 28
+    },
+    {
+      "kind": "security-group",
+      "label": "Límite de confianza: servicios de terceros y repositorio remoto",
+      "wraps": ["servicio-mapas", "github"],
+      "pad": 26
+    }
+  ],
+  "connections": [
+    {
+      "id": "inicio-sesion",
+      "from": "cliente-movil",
+      "to": "autenticacion-keycloak",
+      "label": "Inicio de sesión seguro · OAuth 2.0 / OpenID Connect",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "left"
+    },
+    {
+      "id": "solicitudes-api",
+      "from": "cliente-movil",
+      "to": "api-fastapi",
+      "label": "Solicitudes REST autenticadas · HTTPS / token",
+      "variant": "emphasis"
+    },
+    {
+      "id": "validacion-token",
+      "from": "api-fastapi",
+      "to": "autenticacion-keycloak",
+      "label": "Validación de token y permisos",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "right"
+    },
+    {
+      "id": "datos-relacionales",
+      "from": "api-fastapi",
+      "to": "postgresql",
+      "label": "Lectura y escritura de datos relacionales · SQL",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [925, 205]
+    },
+    {
+      "id": "datos-documentos",
+      "from": "api-fastapi",
+      "to": "mongodb",
+      "label": "Lectura y escritura de documentos",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "mapas-cliente",
+      "from": "cliente-movil",
+      "to": "servicio-mapas",
+      "label": "Mapas, capas y geovisualización",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "datos-geograficos",
+      "from": "api-fastapi",
+      "to": "servicio-mapas",
+      "label": "Datos geográficos para la visualización",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "labelAt": [500, 430]
+    },
+    {
+      "id": "orquestacion-local",
+      "from": "docker-compose",
+      "to": "docker",
+      "label": "Define y levanta contenedores locales",
+      "variant": "dashed",
+      "labelAt": [610, 790]
+    },
+    {
+      "id": "servicios-contenidos",
+      "from": "docker-compose",
+      "to": "api-fastapi",
+      "label": "Ejecuta servicios para desarrollo",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "labelAt": [875, 545]
+    },
+    {
+      "id": "versionado-local",
+      "from": "docker",
+      "to": "git",
+      "label": "Código versionado localmente",
+      "variant": "dashed"
+      ,"fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [[492.5, 810], [992.5, 810]],
+      "labelAt": [745, 800]
+    },
+    {
+      "id": "sincronizacion-remota",
+      "from": "git",
+      "to": "github",
+      "label": "Sincronización del repositorio · envío y obtención de cambios",
+      "variant": "dashed",
+      "labelAt": [1110, 670]
+    }
+  ]
+}
