@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
 
 class MyMessageBubble extends StatelessWidget {
-  const MyMessageBubble({super.key});
+  final Message message;
+  
+  
+  const MyMessageBubble({
+    super.key,
+    required this.message
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +23,11 @@ class MyMessageBubble extends StatelessWidget {
             color: colors.primary, // Usa el color principal del tema
             borderRadius: BorderRadius.circular(20)
           ),
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
-              'Laboris duis dolore',
-              style: TextStyle(color: Colors.white),
+              message.text,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ),
