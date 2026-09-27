@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
 
 class HerMessageBubble extends StatelessWidget {
-  const HerMessageBubble({super.key});
+  final Message message;
+
+  const HerMessageBubble({
+    super.key,
+    required this.message,
+  });
+
+  String _formatTime(DateTime time) {
+    final hour = time.hour % 12 == 0
+        ? 12
+        : time.hour % 12;
+
+    final minute = time.minute.toString().padLeft(2, '0');
+
+    final period = time.hour >= 12 ? 'PM' : 'AM';
+
+    return '$hour:$minute $period';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,57 +28,79 @@ class HerMessageBubble extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Burbuja de texto
         Container(
           decoration: BoxDecoration(
             color: colors.secondary,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Text(
-              'Hola Mundo',
-              style: TextStyle(color: Colors.white),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 10,
+          ),
+          child: Text(
+            message.text,
+            style: const TextStyle(
+              color: Colors.white,
             ),
           ),
         ),
 
-        const SizedBox(height: 5),
+        if (message.imageUrl != null) ...[
+          const SizedBox(height: 5),
 
-        // Imagen o GIF
-        const _ImageBubble(),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              message.imageUrl!,
+              width: MediaQuery.of(context).size.width * 0.7,
+              height: 150,
+              fit: BoxFit.cover,
+              loadingBuilder: (
+                context,
+                child,
+                loadingProgress,
+              ) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+
+                return Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: 150,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(),
+                );
+              },
+              errorBuilder: (
+                context,
+                error,
+                stackTrace,
+              ) {
+                return Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: 150,
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.broken_image,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+
+        const SizedBox(height: 4),
+
+        Text(
+          _formatTime(message.time),
+          style: TextStyle(
+            color: Colors.grey.shade600,
+            fontSize: 11,
+          ),
+        ),
 
         const SizedBox(height: 10),
       ],
-    );
-  }
-}
-
-class _ImageBubble extends StatelessWidget {
-  const _ImageBubble();
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Image.network(
-        'https://yesno.wtf/assets/yes/2-5ce10056038641a0293116a3014a400e.gif',
-        width: size.width * 0.7,
-        height: 150,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-
-          return Container(
-            width: size.width * 0.7,
-            height: 150,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: const Text('Mi amor está enviando una imagen'),
-          );
-        },
-      ),
     );
   }
 }
