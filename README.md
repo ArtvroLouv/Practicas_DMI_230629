@@ -34,17 +34,6 @@ Practicas_DMI_230629/
 
 | No. | Nombre | Descripción | Potenciador | Estatus |
 |---|---|---|---|---|
-| 1 | Metodología de Evaluación de la Materia | Transcribir en libreta y comprender la metodología y fechas de evaluación de la asignatura | 5 | 🟢 Concluida |
+| 1 |  [Metodología de Evaluación de la Materia](/Practica%2002/)| Transcribir en libreta y comprender la metodología y fechas de evaluación de la asignatura | 5 | 🟢 Concluida |
 | 2 | Mi Primer Aplicación Móvil con Flutter | Codificar la app móvil en el framework de Flutter manejando Stateless y Stateful Widgets | 25 | 🟢 Concluida |
 
-## Evidencias de `hello_world_app`
-
-La práctica consiste en una aplicación Flutter con una interfaz de contador y controles para reiniciar, disminuir o aumentar el valor. Las siguientes imágenes muestran distintos estados de ejecución de la aplicación:
-
-![Estado inicial de la aplicación](/Practica%2002/images/image.png)
-
-![Aplicación mostrando la figura verde](/Practica%2002/images/image-1.png)
-
-![Aplicación mostrando las figuras roja y azul](/Practica%2002/images/image-2.png)
-
-![Estado inicial de la aplicación en otra ejecución](/Practica%2002/images/image-3.png)
