@@ -4,7 +4,7 @@ Repositorio de prácticas de la asignatura **Desarrollo Móvil Integral**, enfoc
 
 ## Link Page
 
-[Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/)
+[Diagrama de Arquitectura](https://artvrolouv.github.io/PRACTICAS_INTEGRADORA_230629/)
 
 ## Datos de la asignatura
 
