@@ -4,7 +4,7 @@ Repositorio de prácticas de la asignatura **Desarrollo Móvil Integral**, enfoc
 
 ## Link Page
 
-[Diagrama de Arquitectura](https://artvrolouv.github.io/PRACTICAS_INTEGRADORA_230629/)
+[Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/)
 
 ## Datos de la asignatura
 
@@ -36,3 +36,23 @@ Practicas_DMI_230629/
 |---|---|---|---|---|
 | 1 | Metodología de Evaluación de la Materia | Transcribir en libreta y comprender la metodología y fechas de evaluación de la asignatura | 5 | 🟢 Concluida |
 | 2 | Mi Primer Aplicación Móvil con Flutter | Codificar la app móvil en el framework de Flutter manejando Stateless y Stateful Widgets | 25 | 🟢 Concluida |
+
+## Evidencias de `hello_world_app`
+
+La práctica consiste en una aplicación Flutter con una interfaz de contador y controles para reiniciar, disminuir o aumentar el valor. Las siguientes imágenes muestran distintos estados de ejecución de la aplicación:
+
+### Estado inicial
+
+![Estado inicial de la aplicación](image.png)
+
+### Figura verde
+
+![Aplicación mostrando la figura verde](image-1.png)
+
+### Figuras roja y azul
+
+![Aplicación mostrando las figuras roja y azul](image-2.png)
+
+### Estado inicial en otra ejecución
+
+![Estado inicial de la aplicación en otra ejecución](image-3.png)
