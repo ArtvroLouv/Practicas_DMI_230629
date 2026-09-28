@@ -47,7 +47,8 @@ class ChatProvider extends ChangeNotifier {
       }
 
       final data = jsonDecode(response.body);
-
+      //print('RESPUESTA: $data');
+      //print('GIF: ${data['image']}');
       String responseText;
 
       switch (data['answer']) {
