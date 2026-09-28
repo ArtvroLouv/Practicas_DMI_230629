@@ -41,18 +41,10 @@ Practicas_DMI_230629/
 
 La práctica consiste en una aplicación Flutter con una interfaz de contador y controles para reiniciar, disminuir o aumentar el valor. Las siguientes imágenes muestran distintos estados de ejecución de la aplicación:
 
-### Estado inicial
+![Estado inicial de la aplicación](/images/image.png)
 
-![Estado inicial de la aplicación](image.png)
+![Aplicación mostrando la figura verde](/images/image-1.png)
 
-### Figura verde
+![Aplicación mostrando las figuras roja y azul](/images/image-2.png)
 
-![Aplicación mostrando la figura verde](image-1.png)
-
-### Figuras roja y azul
-
-![Aplicación mostrando las figuras roja y azul](image-2.png)
-
-### Estado inicial en otra ejecución
-
-![Estado inicial de la aplicación en otra ejecución](image-3.png)
+![Estado inicial de la aplicación en otra ejecución](/images/image-3.png)
