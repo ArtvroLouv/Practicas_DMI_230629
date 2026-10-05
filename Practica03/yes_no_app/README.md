@@ -1,16 +1,47 @@
 # yes_no_app
+Aplicación de chat desarrollada con Flutter. Permite enviar mensajes y recibir una respuesta de tipo **Sí**, **No** o **Tal vez**, acompañada de un GIF.
 
-A new Flutter project.
+## Funcionalidades
 
-## Getting Started
+- Interfaz de conversación con mensajes diferenciados para el usuario y el asistente.
+- Respuestas obtenidas desde la API pública [YesNo.wtf](https://yesno.wtf/).
+- Desplazamiento automático al mensaje más reciente.
+- Mensaje de error cuando no se puede consultar la API.
+- Estado del chat gestionado con `provider`.
 
-This project is a starting point for a Flutter application.
+## Requisitos
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter instalado y configurado.
+- Una conexión a Internet para consultar la API.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Ejecutar el proyecto
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Desde esta carpeta (`Practica03/yes_no_app`), instala las dependencias y ejecuta la aplicación:
+
+```bash
+flutter pub get
+flutter run
+```
+
+Para comprobar el código y ejecutar las pruebas:
+
+```bash
+flutter analyze
+flutter test
+```
+
+## Estructura
+
+```text
+lib/
+├── config/theme/          # Tema de la aplicación
+├── domain/entities/       # Modelo de mensaje
+└── presentation/
+	├── providers/         # Estado y lógica del chat
+	├── screens/chat/      # Pantalla principal
+	└── widgets/           # Campo de entrada y burbujas de mensajes
+```
+
+## API
+
+Al enviar un mensaje, la aplicación consulta `https://yesno.wtf/api`. La respuesta incluye el resultado y la URL de un GIF. El resultado puede variar entre **Sí**, **No** y **Tal vez**.
