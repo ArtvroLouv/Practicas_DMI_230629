@@ -3,7 +3,7 @@ Aplicación de chat desarrollada con Flutter. Permite enviar mensajes y recibir 
 
 ## Link Page
 
-[Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica03/yes_no_app/arquitectura\arquitectura_proyecto.html)
+[Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica03/yes_no_app/arquitectura/arquitectura_proyecto.html)
 
 ## Funcionalidades
 
