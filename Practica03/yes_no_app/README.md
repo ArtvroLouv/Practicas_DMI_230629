@@ -9,6 +9,18 @@ Aplicación de chat desarrollada con Flutter. Permite enviar mensajes y recibir 
 - Mensaje de error cuando no se puede consultar la API.
 - Estado del chat gestionado con `provider`.
 
+## Capturas de pantalla / Evidencias
+
+| Estado Inicial | Respuesta: Sí |
+| :---: | :---: |
+| ![Estado Inicial](assets/screenshots/estado_inicial.png) | ![Respuesta Sí](assets/screenshots/respuesta_si.png) |
+
+| Respuesta: No | Respuesta: Tal vez |
+| :---: | :---: |
+| ![Respuesta No](assets/screenshots/respuesta_no.png) | ![Respuesta Tal vez](assets/screenshots/respuesta_tal_vez.png) |
+
+
+
 ## Requisitos
 
 - Flutter instalado y configurado.
@@ -21,15 +33,6 @@ Desde esta carpeta (`Practica03/yes_no_app`), instala las dependencias y ejecuta
 ```bash
 flutter pub get
 flutter run
-```
-
-Para comprobar el código y ejecutar las pruebas:
-
-```bash
-flutter analyze
-flutter test
-```
-
 ## Estructura
 
 ```text

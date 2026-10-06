@@ -1,0 +1,327 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Flujo de una conversaciÃƒÂ³n Ã‚Â· yes_no_app",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "mensaje",
+        "label": "Enviar mensaje",
+        "focus": [
+          "persona",
+          "entrada",
+          "provider",
+          "agrega_usuario",
+          "api",
+          "mapea",
+          "agrega_respuesta",
+          "pantalla"
+        ],
+        "note": "Sigue el envÃƒÂ­o desde el campo hasta el mensaje de respuesta visible."
+      },
+      {
+        "id": "error",
+        "label": "Si falla la API",
+        "focus": [
+          "provider",
+          "api",
+          "error_msg",
+          "agrega_error",
+          "pantalla"
+        ],
+        "note": "La excepciÃƒÂ³n crea un mensaje de error y la interfaz vuelve a dibujar el chat."
+      },
+      {
+        "id": "estado",
+        "label": "ActualizaciÃƒÂ³n visual",
+        "focus": [
+          "agrega_usuario",
+          "provider",
+          "agrega_respuesta",
+          "pantalla",
+          "burbujas"
+        ],
+        "note": "El proveedor notifica cambios; ChatScreen observa y reconstruye la conversaciÃƒÂ³n."
+      }
+    ],
+    "viewBox": [
+      1180,
+      800
+    ]
+  },
+  "lanes": [
+    {
+      "id": "persona_ui",
+      "label": "Persona e interfaz"
+    },
+    {
+      "id": "estado_logica",
+      "label": "Estado y lÃƒÂ³gica (Provider)"
+    },
+    {
+      "id": "red_datos",
+      "label": "Red y respuesta remota"
+    },
+    {
+      "id": "fallo",
+      "label": "Ruta de error",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "entrada",
+      "label": "1 Ã‚Â· Escribir y enviar",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "procesamiento",
+      "label": "2 Ã‚Â· Actualizar y consultar",
+      "fromCol": 2,
+      "toCol": 4,
+      "variant": "emphasis"
+    },
+    {
+      "id": "respuesta",
+      "label": "3 Ã‚Â· Mostrar resultado",
+      "fromCol": 5,
+      "toCol": 5
+    }
+  ],
+  "mainPath": [
+    "persona",
+    "entrada",
+    "provider",
+    "agrega_usuario",
+    "api",
+    "mapea",
+    "agrega_respuesta",
+    "pantalla",
+    "burbujas"
+  ],
+  "nodes": [
+    {
+      "id": "persona",
+      "lane": "persona_ui",
+      "col": 0,
+      "type": "external",
+      "label": "Persona",
+      "sublabel": "escribe una pregunta",
+      "width": 142
+    },
+    {
+      "id": "entrada",
+      "lane": "persona_ui",
+      "col": 1,
+      "type": "frontend",
+      "label": "MessageFieldBox",
+      "sublabel": "botÃƒÂ³n o tecla enviar",
+      "tag": "onValue(text)",
+      "width": 158
+    },
+    {
+      "id": "provider",
+      "lane": "estado_logica",
+      "col": 2,
+      "type": "backend",
+      "label": "ChatProvider",
+      "sublabel": "sendMessage(text)",
+      "tag": "ChangeNotifier",
+      "width": 158
+    },
+    {
+      "id": "agrega_usuario",
+      "lane": "estado_logica",
+      "col": 3,
+      "type": "backend",
+      "label": "AÃƒÂ±ade mensaje propio",
+      "sublabel": "messageList + notifyListeners",
+      "width": 174
+    },
+    {
+      "id": "api",
+      "lane": "red_datos",
+      "col": 4,
+      "type": "cloud",
+      "label": "yesno.wtf",
+      "sublabel": "GET /api?force=Ã¢â‚¬Â¦",
+      "tag": "paquete http",
+      "width": 158
+    },
+    {
+      "id": "mapea",
+      "lane": "red_datos",
+      "col": 5,
+      "type": "backend",
+      "label": "Interpreta respuesta",
+      "sublabel": "answer + image Ã¢â€ â€™ Message",
+      "tag": "jsonDecode",
+      "width": 170
+    },
+    {
+      "id": "agrega_respuesta",
+      "lane": "estado_logica",
+      "col": 5,
+      "type": "backend",
+      "label": "AÃƒÂ±ade respuesta",
+      "sublabel": "hers + imagen + hora",
+      "width": 160,
+      "yOffset": 118
+    },
+    {
+      "id": "pantalla",
+      "lane": "persona_ui",
+      "col": 5,
+      "type": "frontend",
+      "label": "ChatScreen",
+      "sublabel": "context.watch reconstruye",
+      "tag": "notifyListeners",
+      "width": 160,
+      "yOffset": 104
+    },
+    {
+      "id": "burbujas",
+      "lane": "persona_ui",
+      "col": 5,
+      "type": "frontend",
+      "label": "Burbujas del chat",
+      "sublabel": "texto, hora e imagen GIF",
+      "width": 160,
+      "yOffset": 230
+    },
+    {
+      "id": "error_msg",
+      "lane": "fallo",
+      "col": 4,
+      "type": "security",
+      "label": "Captura excepciÃƒÂ³n",
+      "sublabel": "red, JSON o status inesperado",
+      "width": 170
+    },
+    {
+      "id": "agrega_error",
+      "lane": "fallo",
+      "col": 5,
+      "type": "backend",
+      "label": "Mensaje de respaldo",
+      "sublabel": "Ã¢â‚¬Å“No pude responderÃ¢â‚¬Â¦Ã¢â‚¬Â",
+      "width": 170
+    }
+  ],
+  "edges": [
+    {
+      "id": "escribe",
+      "from": "persona",
+      "to": "entrada",
+      "label": "texto de pregunta",
+      "role": "main"
+    },
+    {
+      "id": "envia",
+      "from": "entrada",
+      "to": "provider",
+      "label": "onValue Ã¢â€ â€™ sendMessage",
+      "role": "main"
+    },
+    {
+      "id": "inmediato",
+      "from": "provider",
+      "to": "agrega_usuario",
+      "label": "trim + agrega + notifica",
+      "role": "main"
+    },
+    {
+      "id": "solicitud",
+      "from": "agrega_usuario",
+      "to": "api",
+      "label": "elige yes / no / maybe y consulta",
+      "role": "main"
+    },
+    {
+      "id": "json",
+      "from": "api",
+      "to": "mapea",
+      "label": "HTTP 200 Ã‚Â· JSON answer e image",
+      "role": "main"
+    },
+    {
+      "id": "entidad",
+      "from": "mapea",
+      "to": "agrega_respuesta",
+      "label": "crea Message (fromWho: hers)",
+      "role": "main"
+    },
+    {
+      "id": "actualiza",
+      "from": "agrega_respuesta",
+      "to": "pantalla",
+      "label": "notifyListeners + desplaza scroll",
+      "role": "return"
+    },
+    {
+      "id": "pinta",
+      "from": "pantalla",
+      "to": "burbujas",
+      "label": "ListView elige widget por remitente",
+      "role": "main"
+    },
+    {
+      "id": "falla",
+      "from": "api",
+      "to": "error_msg",
+      "label": "status no exitoso o excepciÃƒÂ³n",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "fallback",
+      "from": "error_msg",
+      "to": "agrega_error",
+      "label": "crea respuesta de error",
+      "role": "error",
+      "variant": "security"
+    },
+    {
+      "id": "notifica_error",
+      "from": "agrega_error",
+      "to": "pantalla",
+      "label": "agrega + notifica",
+      "role": "return",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Archivos del recorrido",
+      "items": [
+        "lib/presentation/widgets/shared/message_field_box.dart Ã‚Â· entrada",
+        "lib/presentation/providers/chat_provider.dart Ã‚Â· estado, HTTP, mapeo y error",
+        "lib/domain/entities/message.dart Ã‚Â· entidad Message",
+        "lib/presentation/screens/chat/chat_screen.dart Ã‚Â· observaciÃƒÂ³n y lista",
+        "lib/presentation/widgets/chat/ Ã‚Â· burbujas propia y recibida"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Lo que sucede en pantalla",
+      "items": [
+        "El mensaje propio aparece antes de esperar a la API.",
+        "Al llegar la respuesta, Provider notifica y ChatScreen vuelve a leer la lista.",
+        "Si falla la solicitud, tambiÃƒÂ©n se agrega y muestra un mensaje de respaldo."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Comportamiento detectado",
+      "items": [
+        "Si el texto estÃƒÂ¡ vacÃƒÂ­o tras trim, se ignora.",
+        "La respuesta forzada se elige al azar: maybe 20 %, yes 40 %, no 40 %.",
+        "La API y el mapeo JSON estÃƒÂ¡n en ChatProvider; no hay servicio separado ni DTO tipado."
+      ]
+    }
+  ]
+}
