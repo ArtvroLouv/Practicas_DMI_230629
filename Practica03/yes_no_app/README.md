@@ -1,6 +1,10 @@
 # yes_no_app
 Aplicación de chat desarrollada con Flutter. Permite enviar mensajes y recibir una respuesta de tipo **Sí**, **No** o **Tal vez**, acompañada de un GIF.
 
+## Link Page
+
+[Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica03/yes_no_app/arquitectura\arquitectura_proyecto.html)
+
 ## Funcionalidades
 
 - Interfaz de conversación con mensajes diferenciados para el usuario y el asistente.
