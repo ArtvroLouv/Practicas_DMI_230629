@@ -4,7 +4,7 @@
 ---
 
 
-## [Ver Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Appetize/demo_appetize/diagrama-arquitectura.html)
+## [Ver Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Appetize/demo_appetize/diagrama-arquitectura)
 
 ---
 
