@@ -3,6 +3,15 @@
 
 ---
 
+
+## [Ver Diagrama de Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Appetize/demo_appetize/diagrama-arquitectura.html)
+
+---
+
+##### **URL de Ejecución Remota:** [Probar Aplicación en Appetize.io](https://appetize.io/app/b_3e37utmtlqojln32dxh5bi3zwe)
+
+---
+
 ### 1. Datos Generales y Especificaciones del Proyecto
 * **Proyecto:** Demo E-Commerce / Streetwear Store (`demo_appetize`)
 * **Framework:** Flutter (Material Design 3 / Dark Theme)

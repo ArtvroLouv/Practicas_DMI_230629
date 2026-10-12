@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura Interactiva - Flutter & Appetize.io Cloud</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#070A10',
+                            card: '#0D1322',
+                            border: '#1E293B',
+                            accent: '#38BDF8',
+                            orange: '#FF5722',
+                            purple: '#A855F7',
+                            green: '#10B981',
+                            pink: '#EC4899',
+                            yellow: '#F59E0B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #070A10;
+            color: #F8FAFC;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Glassmorphism & Neon Glows */
+        .glass-panel {
+            background: rgba(13, 19, 34, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(20, 30, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -5px rgba(56, 189, 248, 0.2);
+        }
+
+        .node-active {
+            border-color: #38BDF8 !important;
+            background: rgba(56, 189, 248, 0.1) !important;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.35) !important;
+        }
+
+        .node-highlighted {
+            border-color: #FF5722 !important;
+            background: rgba(255, 87, 34, 0.12) !important;
+            box-shadow: 0 0 25px rgba(255, 87, 34, 0.4) !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070A10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38BDF8;
+        }
+
+        /* Connecting SVG Overlay */
+        #connectionCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .pulse-badge {
+            animation: pulse-ring 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#070A10] text-slate-100 antialiased selection:bg-sky-500 selection:text-white">
+
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-gradient-to-tr from-sky-500 via-indigo-600 to-purple-600 rounded-xl shadow-lg shadow-sky-500/25">
+                <i class="fa-solid fa-network-wired text-white text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base text-white tracking-wide flex items-center gap-2">
+                    Arquitectura Dinámica Flutter &rarr; Appetize.io 
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30 font-mono">Interactive v2.0</span>
+                </h1>
+                <p class="text-xs text-slate-400">Modelo interactivo de capas, flujo causal y simulación en tiempo real</p>
+            </div>
+        </div>
+
+        <!-- Toolbar Controls -->
+        <div class="flex items-center space-x-3">
+            <!-- View Switcher -->
+            <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-800 flex items-center space-x-1">
+                <button id="btnViewDiagram" onclick="switchView('diagram')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-sky-500 text-white shadow-md flex items-center gap-1.5">
+                    <i class="fa-solid fa-cubes"></i> Diagrama por Capas
+                </button>
+                <button id="btnViewSequence" onclick="switchView('sequence')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-timeline"></i> Flujo Causal
+                </button>
+            </div>
+
+            <!-- Walkthrough / Simulation Button -->
+            <button id="btnWalkthrough" onclick="toggleWalkthrough()" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 hover:opacity-90 text-white shadow-lg shadow-orange-500/25 transition-all flex items-center space-x-2">
+                <i class="fa-solid fa-play" id="walkIcon"></i>
+                <span id="walkText">Iniciar Tour Guiado</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 relative flex overflow-hidden">
+
+        <!-- ================= DIAGRAM VIEW ================= -->
+        <div id="diagramContainer" class="flex-1 overflow-auto p-6 md:p-10 relative min-w-[1300px]">
+            <!-- Canvas for Dynamic Bezier Lines & Particles -->
+            <canvas id="connectionCanvas"></canvas>
+
+            <!-- 4 Architecture Columns / Layers -->
+            <div class="grid grid-cols-4 gap-8 relative z-20">
+
+                <!-- LAYER 1: FLUTTER PRESENTATION -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-sky-500/30">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-lg shadow-sky-400/50"></div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-sky-400 font-mono">1. Capa UI Flutter</h2>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-500">Presentation</span>
+                    </div>
+
+                    <!-- Node 1.1 -->
+                    <div id="node-ui" onclick="selectNode('ui')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-mobile-screen text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Views</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Material Design 3 UI</h3>
+                        <p class="text-xs text-slate-400 mt-1">CatalogoScreen & DetalleProductoScreen con soporte nativo de tema oscuro.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-sky-400">
+                            <span>lib/main.dart</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+
+                    <!-- Node 1.2 -->
+                    <div id="node-state" onclick="selectNode('state')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-arrows-rotate text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">State</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Estado Reactivo & Carrito</h3>
+                        <p class="text-xs text-slate-400 mt-1">StatefulBuilder, Navigator.pop tipado y gestión local de ítems seleccionados.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-purple-400">
+                            <span>ItemCarrito Model</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+
+                    <!-- Node 1.3 -->
+                    <div id="node-network" onclick="selectNode('network')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-globe text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Assets</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Carga HTTP & Unsplash API</h3>
+                        <p class="text-xs text-slate-400 mt-1">Conexión asíncrona mediante Image.network para renderizar imágenes de productos.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-emerald-400">
+                            <span>HTTPS Protocols</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAYER 2: COMPILATION & BUILD TOOLCHAIN -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-orange-500/30">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-orange-400 shadow-lg shadow-orange-400/50"></div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-orange-400 font-mono">2. Compilación & Build</h2>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-500">Toolchain</span>
+                    </div>
+
+                    <!-- Node 2.1 -->
+                    <div id="node-cli" onclick="selectNode('cli')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-terminal text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">CLI</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Dart AOT Compiler</h3>
+                        <p class="text-xs text-slate-400 mt-1">Traducción de código Dart a binario ARM optimizado para arquitectura Android.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-orange-400">
+                            <span>flutter build apk</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+
+                    <!-- Node 2.2 -->
+                    <div id="node-apk" onclick="selectNode('apk')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-box-archive text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Binary</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Artefacto APK Release</h3>
+                        <p class="text-xs text-slate-400 mt-1">Paquete ejecutable optimizado (~18 MB) conteniendo manifiesto y recursos.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-amber-400">
+                            <span>app-release.apk</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAYER 3: APPETIZE.IO CLOUD RUNTIME -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-indigo-500/30">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-lg shadow-indigo-400/50"></div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-400 font-mono">3. Appetize.io Cloud</h2>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-500">Virtualization</span>
+                    </div>
+
+                    <!-- Node 3.1 -->
+                    <div id="node-upload" onclick="selectNode('upload')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Ingestion</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Upload Engine & REST API</h3>
+                        <p class="text-xs text-slate-400 mt-1">Ingesta segura de APK y asignación de App Key única en servidores cloud.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-indigo-400">
+                            <span>POST /v1/apps</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+
+                    <!-- Node 3.2 -->
+                    <div id="node-emulator" onclick="selectNode('emulator')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-pink-500/10 text-pink-400 border border-pink-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-server text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Runtime</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Contenedor Android Virtual</h3>
+                        <p class="text-xs text-slate-400 mt-1">Instancia aislada en AWS EC2 emulando Google Pixel con Android 13.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-pink-400">
+                            <span>Pixel 7 / API 33</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+
+                    <!-- Node 3.3 -->
+                    <div id="node-stream" onclick="selectNode('stream')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-tower-broadcast text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Streaming</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">WebSocket & HTML5 VNC</h3>
+                        <p class="text-xs text-slate-400 mt-1">Transmisión interactiva de video y retorno de eventos táctiles en tiempo real.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-cyan-400">
+                            <span>wss://appetize.io</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAYER 4: GIT & DOCUMENTATION -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-emerald-500/30">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
+                            <h2 class="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">4. Control & Git</h2>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-500">Repository</span>
+                    </div>
+
+                    <!-- Node 4.1 -->
+                    <div id="node-git" onclick="selectNode('git')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-code-branch text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Git Flow</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">Estrategia de Ramas</h3>
+                        <p class="text-xs text-slate-400 mt-1">Aislamiento de código en feature branches previo a la integración en main.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-emerald-400">
+                            <span>feature/practica</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+
+                    <!-- Node 4.2 -->
+                    <div id="node-readme" onclick="selectNode('readme')" class="glass-card p-4 rounded-xl border border-slate-800 cursor-pointer relative group">
+                        <div class="flex items-start justify-between">
+                            <div class="p-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-file-lines text-lg"></i>
+                            </div>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">Report</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-100 mt-3">README.md Técnico</h3>
+                        <p class="text-xs text-slate-400 mt-1">Documentación detallada de compilación, URL pública y matriz de pruebas.</p>
+                        <div class="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-teal-400">
+                            <span>Markdown Spec</span>
+                            <i class="fa-solid fa-chevron-right opacity-60"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= SEQUENCE / CAUSAL VIEW ================= -->
+        <div id="sequenceContainer" class="hidden flex-1 overflow-auto p-8 max-w-4xl mx-auto space-y-6">
+            <div class="glass-panel p-8 rounded-2xl border border-slate-800 shadow-2xl">
+                <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-diagram-project text-sky-400"></i> Diagrama Causal y Secuencia de Ejecución
+                </h2>
+                <p class="text-xs text-slate-400 mb-8">Paso a paso cronológico desde la escritura del código en Flutter hasta la visualización interactiva en el navegador del usuario.</p>
+
+                <div class="relative border-l-2 border-slate-800 ml-4 pl-8 space-y-10">
+                    <!-- Step 1 -->
+                    <div class="relative group">
+                        <div class="absolute -left-[45px] top-0 w-8 h-8 rounded-full bg-sky-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-sky-500/40">01</div>
+                        <h3 class="font-bold text-sm text-sky-400 font-mono">Diseño de Interfaz y Estado (Flutter)</h3>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">El programador desarrolla el catálogo y carrito en `lib/main.dart` utilizando componentes Material 3 y gestión de estados locales para actualizar los montos en tiempo real.</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative group">
+                        <div class="absolute -left-[45px] top-0 w-8 h-8 rounded-full bg-orange-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-orange-500/40">02</div>
+                        <h3 class="font-bold text-sm text-orange-400 font-mono">Compilación del Binario Nativo (CLI)</h3>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">Se ejecuta el comando `flutter build apk --release`. El motor AOT de Dart procesa el árbol de widgets y genera el archivo `app-release.apk` optimizado para Android.</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative group">
+                        <div class="absolute -left-[45px] top-0 w-8 h-8 rounded-full bg-indigo-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-indigo-500/40">03</div>
+                        <h3 class="font-bold text-sm text-indigo-400 font-mono">Ingesta en Servidores Cloud (Appetize.io)</h3>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">El archivo ejecutable se sube a la plataforma Appetize.io. La infraestructura procesa el APK y asigna una clave pública de acceso web para el despliegue.</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative group">
+                        <div class="absolute -left-[45px] top-0 w-8 h-8 rounded-full bg-pink-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-pink-500/40">04</div>
+                        <h3 class="font-bold text-sm text-pink-400 font-mono">Virtualización y Contenedor Android</h3>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">Se instancia un dispositivo virtual (ej. Pixel 7 con Android 13) en servidores cloud sobre la arquitectura de emulación, ejecutando la app de forma totalmente aislada.</p>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="relative group">
+                        <div class="absolute -left-[45px] top-0 w-8 h-8 rounded-full bg-cyan-500 text-slate-950 font-bold text-xs flex items-center justify-center shadow-lg shadow-cyan-500/40">05</div>
+                        <h3 class="font-bold text-sm text-cyan-400 font-mono">Streaming Bidireccional vía WebSockets</h3>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">El usuario final accede mediante HTML5 Canvas en su navegador web. Los eventos táctiles viajan al servidor y retornan el flujo de video con latencia ultra-baja.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= INTERACTIVE DETAIL SIDE DRAWER ================= -->
+        <aside id="detailDrawer" class="w-[420px] glass-panel border-l border-slate-800/80 p-6 overflow-y-auto transform transition-transform duration-300 translate-x-full absolute right-0 top-0 bottom-0 z-40 shadow-2xl flex flex-col justify-between">
+            <div class="space-y-6">
+                <!-- Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                    <span id="drawerBadge" class="text-[10px] font-mono px-2.5 py-1 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold">Capa Flutter</span>
+                    <button onclick="closeDrawer()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Title & Description -->
+                <div>
+                    <h3 id="drawerTitle" class="text-lg font-bold text-white tracking-wide">Título del Componente</h3>
+                    <p id="drawerSubtitle" class="text-xs text-slate-400 mt-1">Subtítulo explicativo del nodo seleccionado.</p>
+                </div>
+
+                <!-- Responsibility Box -->
+                <div class="space-y-2">
+                    <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-sky-400"></i> Responsabilidad Técnica
+                    </h4>
+                    <p id="drawerResponsibility" class="text-xs text-slate-300 leading-relaxed bg-slate-900/80 p-3.5 rounded-xl border border-slate-800/80 shadow-inner">
+                        Detalle de la responsabilidad...
+                    </p>
+                </div>
+
+                <!-- Technologies & Stack -->
+                <div class="space-y-2">
+                    <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                        <i class="fa-solid fa-microchip text-purple-400"></i> Tecnologías Involucradas
+                    </h4>
+                    <div id="drawerTech" class="flex flex-wrap gap-1.5">
+                        <!-- Badges injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Command / Code Output -->
+                <div class="space-y-2">
+                    <h4 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                        <i class="fa-solid fa-code text-orange-400"></i> Código / Comandos Asociados
+                    </h4>
+                    <div id="drawerCode" class="mono text-xs p-3.5 rounded-xl bg-black/90 text-sky-400 border border-slate-800 overflow-x-auto shadow-inner">
+                        flutter build apk --release
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Action in Drawer -->
+            <div class="pt-6 mt-6 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+                <span>Estado: <strong class="text-emerald-400">Verificado OK</strong></span>
+                <button onclick="closeDrawer()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-sky-500/20">
+                    Cerrar Panel
+                </button>
+            </div>
+        </aside>
+
+    </main>
+
+    <script>
+        // Comprehensive Dataset for Architecture Nodes
+        const ARCHITECTURE_DATA = {
+            'ui': {
+                title: 'Material Design 3 UI',
+                subtitle: 'Capa de Presentación y Vistas de Usuario',
+                badge: 'Flutter Presentation',
+                responsibility: 'Encargada de construir la jerarquía de widgets responsivos en modo oscuro. Gestiona las pantallas `CatalogoScreen` y `DetalleProductoScreen`, asegurando una interfaz fluida e intuitiva con soporte de gestos táctiles.',
+                tech: ['Flutter SDK', 'Material 3', 'Dart 3.x', 'StatelessWidget', 'Responsive Layout'],
+                code: 'lib/main.dart\nThemeData(brightness: Brightness.dark, useMaterial3: true)'
+            },
+            'state': {
+                title: 'Estado Reactivo & Carrito',
+                subtitle: 'Gestión de Lógica Local y Modales',
+                badge: 'Flutter State',
+                responsibility: 'Controla el ciclo de vida de los datos de la aplicación (`List<ItemCarrito>`). Utiliza `StatefulBuilder` en modales deslizantes para actualizar subtotales y cantidades de forma instantánea al agregar o quitar productos.',
+                tech: ['setState()', 'Navigator.pop()', 'StatefulBuilder', 'BottomSheets'],
+                code: 'Navigator.pop(context, item);\nsetState(() { _carrito.add(item); });'
+            },
+            'network': {
+                title: 'Carga HTTP & Unsplash API',
+                subtitle: 'Gestión de Recursos Multimedia Remotos',
+                badge: 'Networking',
+                responsibility: 'Realiza peticiones asíncronas HTTPS para cargar imágenes en alta definición de productos de manera eficiente, optimizando el uso de memoria y caché en el entorno emulado.',
+                tech: ['Image.network()', 'HTTPS Protocol', 'NetworkImage', 'Async/Await'],
+                code: 'Image.network("https://images.unsplash.com/photo-...", fit: BoxFit.cover)'
+            },
+            'cli': {
+                title: 'Dart AOT Compiler',
+                subtitle: 'Motor de Compilación Ahead-Of-Time',
+                badge: 'Build Toolchain',
+                responsibility: 'Traduce el código fuente escrito en Dart a lenguaje de máquina ARM optimizado para la plataforma Android, despojando símbolos innecesarios para garantizar la máxima velocidad de ejecución.',
+                tech: ['Flutter CLI', 'Dart AOT Compiler', 'Android NDK', 'Gradle'],
+                code: 'flutter clean\nflutter pub get\nflutter build apk --release'
+            },
+            'apk': {
+                title: 'Artefacto APK Release',
+                subtitle: 'Binario Ejecutable Optimizado',
+                badge: 'Android Package',
+                responsibility: 'Paquete binario final `.apk` (~18 MB) listo para distribución o carga en la nube. Contiene el bytecode compilado, recursos gráficos y manifiesto con permisos de red configurados.',
+                tech: ['Android Package (.apk)', 'AndroidManifest.xml', 'ZIP Compression'],
+                code: 'build/app/outputs/flutter-apk/app-release.apk'
+            },
+            'upload': {
+                title: 'Upload Engine & REST API',
+                subtitle: 'Ingestion y Procesamiento Cloud',
+                badge: 'Appetize Ingestion',
+                responsibility: 'Recibe el archivo `.apk` mediante subida multipart segura, descomprime manifiestos, valida compatibilidad con la API de Android y asigna un identificador hash único (App Key).',
+                tech: ['HTTPS Upload', 'APK Analyzer', 'REST API Client', 'Appetize Cloud Manager'],
+                code: 'POST /v1/apps/upload\nAuthorization: Bearer api_key_xxx'
+            },
+            'emulator': {
+                title: 'Contenedor Android Virtual',
+                subtitle: 'Instancia Aislada en Servidores AWS',
+                badge: 'Appetize Runtime',
+                responsibility: 'Lanza una máquina virtual ligera con arquitectura QEMU/KVM sobre nodos AWS EC2. Ejecuta Android 13 en un dispositivo Pixel virtualizado sin requerir hardware físico por parte del usuario.',
+                tech: ['QEMU / KVM', 'AWS EC2', 'Android 13 (API 33)', 'Google Pixel 7 Spec'],
+                code: 'Device Spec: Pixel 7 Pro\nOS: Android 13.0 Runtime'
+            },
+            'stream': {
+                title: 'WebSocket & HTML5 VNC',
+                subtitle: 'Transmisión Interactiva en Tiempo Real',
+                badge: 'Web Streaming',
+                responsibility: 'Captura el frame-buffer del emulador virtual y lo transmite como flujo de video comprimido al cliente web. Traduce clics y toques del usuario en pantalla a eventos táctiles del sistema.',
+                tech: ['WebSockets', 'HTML5 Canvas', 'noVNC', 'WebRTC Protocol'],
+                code: 'wss://appetize.io/stream?publicKey=app_key_xyz\nLatency: <50ms'
+            },
+            'git': {
+                title: 'Estrategia de Ramas (Git Flow)',
+                subtitle: 'Control de Versiones y Trazabilidad',
+                badge: 'Repository',
+                responsibility: 'Permite registrar de manera ordenada y progresiva las evidencias de desarrollo, aislando el trabajo en ramas de características (`feature/`) previo a la integración en la rama principal.',
+                tech: ['Git CLI', 'GitHub Platform', 'Feature Branching Workflow'],
+                code: 'git checkout -b feature/practica-appetize\ngit push origin feature/practica-appetize'
+            },
+            'readme': {
+                title: 'README.md Técnico',
+                subtitle: 'Documentación Oficial para Evaluación',
+                badge: 'Documentation',
+                responsibility: 'Reporte markdown detallando la arquitectura, comandos de compilación, enlace público de Appetize.io, tabla de pruebas de adaptabilidad en diferentes dispositivos y bitácora de incidencias.',
+                tech: ['Markdown Syntax', 'GitHub Render', 'Technical Report Spec'],
+                code: '# REPORTE TÉCNICO DE ARQUITECTURA\n## Flutter & Appetize.io Cloud'
+            }
+        };
+
+        let selectedNodeId = null;
+        let isWalkthroughActive = false;
+        let walkthroughTimer = null;
+        let particleOffset = 0;
+
+        // Initialize Canvas Connectors and Animation Loop
+        window.onload = function() {
+            drawConnections();
+            window.addEventListener('resize', drawConnections);
+            requestAnimationFrame(animateParticles);
+        };
+
+        // Draw Curved Bezier Connections between Nodes
+        function drawConnections() {
+            const canvas = document.getElementById('connectionCanvas');
+            const container = document.getElementById('diagramContainer');
+            
+            canvas.width = container.scrollWidth;
+            canvas.height = container.scrollHeight;
+
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Connection mappings [fromNode, toNode, color]
+            const connections = [
+                ['node-ui', 'node-cli', '#38BDF8'],
+                ['node-state', 'node-cli', '#A855F7'],
+                ['node-network', 'node-cli', '#10B981'],
+                ['node-cli', 'node-apk', '#FF5722'],
+                ['node-apk', 'node-upload', '#F59E0B'],
+                ['node-upload', 'node-emulator', '#6366F1'],
+                ['node-emulator', 'node-stream', '#EC4899'],
+                ['node-apk', 'node-git', '#10B981'],
+                ['node-git', 'node-readme', '#14B8A6']
+            ];
+
+            connections.forEach(([fromId, toId, color]) => {
+                const fromElem = document.getElementById(fromId);
+                const toElem = document.getElementById(toId);
+
+                if (fromElem && toElem) {
+                    const rectA = fromElem.getBoundingClientRect();
+                    const rectB = toElem.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+
+                    const startX = rectA.right - containerRect.left + container.scrollLeft;
+                    const startY = rectA.top + rectA.height / 2 - containerRect.top + container.scrollTop;
+                    const endX = rectB.left - containerRect.left + container.scrollLeft;
+                    const endY = rectB.top + rectB.height / 2 - containerRect.top + container.scrollTop;
+
+                    // Draw Smooth Bezier Curve
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.bezierCurveTo(startX + 45, startY, endX - 45, endY, endX, endY);
+                    ctx.strokeStyle = color;
+                    ctx.globalAlpha = 0.35;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Draw flowing data particle dots along path
+                    const t = (particleOffset % 100) / 100;
+                    const bezierX = cubicBezier(t, startX, startX + 45, endX - 45, endX);
+                    const bezierY = cubicBezier(t, startY, startY, endY, endY);
+
+                    ctx.fillStyle = color;
+                    ctx.globalAlpha = 0.9;
+                    ctx.beginPath();
+                    ctx.arc(bezierX, bezierY, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function cubicBezier(t, p0, p1, p2, p3) {
+            return Math.pow(1 - t, 3) * p0 + 3 * Math.pow(1 - t, 2) * t * p1 + 3 * (1 - t) * Math.pow(t, 2) * p2 + Math.pow(t, 3) * p3;
+        }
+
+        function animateParticles() {
+            particleOffset += 1.5;
+            if (document.getElementById('diagramContainer').classList.contains('hidden') === false) {
+                drawConnections();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Open Side Drawer with Component Details
+        function selectNode(id) {
+            selectedNodeId = id;
+            const data = ARCHITECTURE_DATA[id];
+            if (!data) return;
+
+            // Update node classes
+            document.querySelectorAll('.glass-card').forEach(card => card.classList.remove('node-active'));
+            const activeElem = document.getElementById(`node-${id}`);
+            if (activeElem) activeElem.classList.add('node-active');
+
+            // Populate Drawer fields
+            document.getElementById('drawerTitle').innerText = data.title;
+            document.getElementById('drawerSubtitle').innerText = data.subtitle;
+            document.getElementById('drawerBadge').innerText = data.badge;
+            document.getElementById('drawerResponsibility').innerText = data.responsibility;
+            document.getElementById('drawerCode').innerText = data.code;
+
+            // Populate Tech Stack Badges
+            const techContainer = document.getElementById('drawerTech');
+            techContainer.innerHTML = '';
+            data.tech.forEach(t => {
+                const badge = document.createElement('span');
+                badge.className = 'px-2.5 py-1 rounded-md text-[10px] font-mono bg-slate-900 text-slate-300 border border-slate-800 shadow-sm';
+                badge.innerText = t;
+                techContainer.appendChild(badge);
+            });
+
+            // Slide open drawer
+            document.getElementById('detailDrawer').classList.remove('translate-x-full');
+        }
+
+        function closeDrawer() {
+            document.getElementById('detailDrawer').classList.add('translate-x-full');
+            document.querySelectorAll('.glass-card').forEach(card => card.classList.remove('node-active'));
+        }
+
+        // Switch Views: Diagram vs Causal Sequence
+        function switchView(view) {
+            const diag = document.getElementById('diagramContainer');
+            const seq = document.getElementById('sequenceContainer');
+            const btnDiag = document.getElementById('btnViewDiagram');
+            const btnSeq = document.getElementById('btnViewSequence');
+
+            if (view === 'diagram') {
+                diag.classList.remove('hidden');
+                seq.classList.add('hidden');
+                btnDiag.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-sky-500 text-white shadow-md flex items-center gap-1.5';
+                btnSeq.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
+                setTimeout(drawConnections, 50);
+            } else {
+                diag.classList.add('hidden');
+                seq.classList.remove('hidden');
+                btnSeq.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-sky-500 text-white shadow-md flex items-center gap-1.5';
+                btnDiag.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
+            }
+        }
+
+        // Walkthrough Tour Simulation
+        function toggleWalkthrough() {
+            isWalkthroughActive = !isWalkthroughActive;
+            const walkText = document.getElementById('walkText');
+            const walkIcon = document.getElementById('walkIcon');
+
+            if (isWalkthroughActive) {
+                walkText.innerText = 'Detener Tour Guiado';
+                walkIcon.className = 'fa-solid fa-stop';
+                
+                // Ensure we are on diagram view
+                switchView('diagram');
+
+                const sequence = ['ui', 'state', 'cli', 'apk', 'upload', 'emulator', 'stream'];
+                let index = 0;
+
+                walkthroughTimer = setInterval(() => {
+                    selectNode(sequence[index]);
+                    index = (index + 1) % sequence.length;
+                }, 2200);
+            } else {
+                walkText.innerText = 'Iniciar Tour Guiado';
+                walkIcon.className = 'fa-solid fa-play';
+                clearInterval(walkthroughTimer);
+                closeDrawer();
+            }
+        }
+    </script>
+</body>
+</html>
