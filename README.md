@@ -37,6 +37,6 @@ Practicas_DMI_230629/
 | 1 | Metodología de Evaluación de la Materia| Transcribir en libreta y comprender la metodología y fechas de evaluación de la asignatura | 5 | 🟢 Concluida |
 | 2 | [Mi Primer Aplicación Móvil con Flutter](/Practica%2002/)  | Codificar la app móvil en el framework de Flutter manejando Stateless y Stateful Widgets | 25 | 🟢 Concluida |
 | 3 | [Yes/No/Maybe App](/Practica03/yes_no_app/)  | Chat con API de Respuestas Automáticas | 30 | 🟢 Concluida |
-| 4 | Pendiente  | Pendiente | Pendiente | Pendiente |
-| 5 | [App en Appetize](/Appetize/demo_appetize/)  | Alojamiento de App en Appetize | Pendiente | 🟢 Concluida |
+| 4 | [TokTik](/Practica04/toktik/)  | Aplicacion de Reproducción de videos verticales  | 30 | 🟢 Concluida |
+
 
