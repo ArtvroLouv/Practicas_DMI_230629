@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "TokTik | Arquitectura y flujo del feed",
+    "quality_profile": "showcase",
+    "animation": "trace",
+    "views": [
+      {
+        "id": "startup",
+        "label": "Inicio",
+        "focus": [
+          "person",
+          "startup",
+          "splash",
+          "home"
+        ],
+        "note": "Inicializacion Flutter, branding de temporada y entrada al feed."
+      },
+      {
+        "id": "feed",
+        "label": "Feed",
+        "focus": [
+          "home",
+          "provider",
+          "repository",
+          "source",
+          "tikwm",
+          "pixabay"
+        ],
+        "note": "Carga por seccion con endpoints y rutas de respaldo reales."
+      },
+      {
+        "id": "saved",
+        "label": "Favoritos",
+        "focus": [
+          "home",
+          "provider",
+          "storage"
+        ],
+        "note": "Reconstruccion local desde IDs y publicaciones persistidas."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "person",
+      "type": "external",
+      "label": "Persona usuaria",
+      "sublabel": "Mobile / Web",
+      "pos": [
+        30,
+        330
+      ],
+      "size": [
+        130,
+        70
+      ],
+      "tag": "TokTik"
+    },
+    {
+      "id": "startup",
+      "type": "frontend",
+      "label": "Flutter startup",
+      "sublabel": "main / dotenv / local storage",
+      "tag": "main.dart",
+      "pos": [
+        205,
+        330
+      ],
+      "size": [
+        170,
+        76
+      ]
+    },
+    {
+      "id": "splash",
+      "type": "frontend",
+      "label": "Splash de temporada",
+      "sublabel": "logo / animacion / audio",
+      "tag": "branding",
+      "pos": [
+        430,
+        140
+      ],
+      "size": [
+        170,
+        76
+      ]
+    },
+    {
+      "id": "home",
+      "type": "frontend",
+      "label": "Home y secciones",
+      "sublabel": "Para ti / Cerca / Descubrir",
+      "tag": "interfaz",
+      "pos": [
+        430,
+        330
+      ],
+      "size": [
+        180,
+        80
+      ]
+    },
+    {
+      "id": "provider",
+      "type": "backend",
+      "label": "FeedProvider",
+      "sublabel": "feed state / refresh",
+      "tag": "ChangeNotifier",
+      "pos": [
+        665,
+        330
+      ],
+      "size": [
+        170,
+        80
+      ]
+    },
+    {
+      "id": "repository",
+      "type": "backend",
+      "label": "VideoPostsRepositoryImpl",
+      "sublabel": "domain / data source",
+      "tag": "repositorio",
+      "pos": [
+        900,
+        330
+      ],
+      "size": [
+        180,
+        80
+      ]
+    },
+    {
+      "id": "source",
+      "type": "backend",
+      "label": "RapidApiDatasource",
+      "sublabel": "Dio / mapeo / respaldo",
+      "tag": "infraestructura",
+      "pos": [
+        1135,
+        330
+      ],
+      "size": [
+        180,
+        80
+      ]
+    },
+    {
+      "id": "tikwm",
+      "type": "cloud",
+      "label": "TikWM",
+      "sublabel": "feed US / feed MX",
+      "tag": "HTTPS",
+      "pos": [
+        1135,
+        140
+      ],
+      "size": [
+        170,
+        76
+      ]
+    },
+    {
+      "id": "pixabay",
+      "type": "cloud",
+      "label": "Pixabay Videos",
+      "sublabel": "Discover / respaldo regional",
+      "tag": "HTTPS",
+      "pos": [
+        1135,
+        500
+      ],
+      "size": [
+        180,
+        76
+      ]
+    },
+    {
+      "id": "storage",
+      "type": "database",
+      "label": "SharedPreferences",
+      "sublabel": "favoritos / video IDs",
+      "tag": "local",
+      "pos": [
+        665,
+        500
+      ],
+      "size": [
+        170,
+        76
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "launch",
+      "from": "person",
+      "to": "startup",
+      "label": "launch",
+      "variant": "emphasis",
+      "labelDy": -48
+    },
+    {
+      "id": "boot-to-splash",
+      "from": "startup",
+      "to": "splash",
+      "label": "runApp",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "left",
+      "labelDy": -24
+    },
+    {
+      "id": "splash-to-home",
+      "from": "splash",
+      "to": "home",
+      "label": "ready",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDx": 54
+    },
+    {
+      "id": "home-to-feed",
+      "from": "home",
+      "to": "provider",
+      "label": "loadAll / refresh",
+      "variant": "emphasis",
+      "labelDy": -52
+    },
+    {
+      "id": "feed-to-repository",
+      "from": "provider",
+      "to": "repository",
+      "label": "section call",
+      "labelDy": -52
+    },
+    {
+      "id": "repo-to-source",
+      "from": "repository",
+      "to": "source",
+      "label": "datasource API",
+      "labelDy": -100,
+      "labelDx": -95
+    },
+    {
+      "id": "source-tikwm",
+      "from": "source",
+      "to": "tikwm",
+      "label": "TikWM US / MX",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "left",
+      "labelDy": -24,
+      "labelDx": 96
+    },
+    {
+      "id": "source-pixabay",
+      "from": "source",
+      "to": "pixabay",
+      "label": "Discover / fallback",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "labelDy": 30
+    },
+    {
+      "id": "feed-favorites",
+      "from": "provider",
+      "to": "storage",
+      "label": "read IDs + video",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDx": 100,
+      "labelDy": -74
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Arranque y presentacion",
+      "items": [
+        "main() configura orientacion vertical, SharedPreferences y dotenv; despues sincroniza el icono de temporada.",
+        "SplashScreen termina y Home solicita loadAll() al FeedProvider."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Rutas reales de contenido",
+      "items": [
+        "Para ti: TikWM region=US; Pixabay si falla o responde sin videos.",
+        "Descubrir: Pixabay Videos. Cerca de ti: TikWM region=MX y luego Pixabay regional."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Estado y persistencia",
+      "items": [
+        "For You carga primero; Near You, Discover y Favorites contin?an en segundo plano.",
+        "Favorites lee IDs y video_{id} desde SharedPreferences; deduplicacion antes de notificar la interfaz."
+      ]
+    }
+  ]
+}

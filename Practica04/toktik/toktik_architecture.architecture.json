@@ -1,0 +1,304 @@
+{
+    "schema_version":  1,
+    "diagram_type":  "architecture",
+    "meta":  {
+                 "title":  "TokTik Ãƒâ€šÃ‚Â· flujo real del feed",
+                 "quality_profile":  "showcase",
+                 "animation":  "trace",
+                 "views":  [
+                               {
+                                   "id":  "startup",
+                                   "label":  "Inicio",
+                                   "focus":  [
+                                                 "person",
+                                                 "startup",
+                                                 "splash",
+                                                 "home"
+                                             ],
+                                   "note":  "InicializaciÃƒÆ’Ã‚Â³n Flutter, branding de temporada y entrada al feed."
+                               },
+                               {
+                                   "id":  "feed",
+                                   "label":  "Feed",
+                                   "focus":  [
+                                                 "home",
+                                                 "provider",
+                                                 "repository",
+                                                 "source",
+                                                 "tikwm",
+                                                 "pixabay"
+                                             ],
+                                   "note":  "Carga del feed por secciÃƒÆ’Ã‚Â³n con endpoints y fallbacks reales."
+                               },
+                               {
+                                   "id":  "saved",
+                                   "label":  "Favoritos",
+                                   "focus":  [
+                                                 "home",
+                                                 "provider",
+                                                 "storage"
+                                             ],
+                                   "note":  "ReconstrucciÃƒÆ’Ã‚Â³n local desde IDs favoritos y videos persistidos."
+                               }
+                           ]
+             },
+    "components":  [
+                       {
+                           "id":  "person",
+                           "type":  "external",
+                           "label":  "Persona",
+                           "sublabel":  "mobile Ã‚Â· web",
+                           "pos":  [
+                                       30,
+                                       330
+                                   ],
+                           "size":  [
+                                        130,
+                                        70
+                                    ]
+                       },
+                       {
+                           "id":  "startup",
+                           "type":  "frontend",
+                           "label":  "Flutter startup",
+                           "sublabel":  "main Ã‚Â· dotenv Ã‚Â· storage",
+                           "tag":  "main.dart",
+                           "pos":  [
+                                       205,
+                                       330
+                                   ],
+                           "size":  [
+                                        170,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "splash",
+                           "type":  "frontend",
+                           "label":  "Splash estacional",
+                           "sublabel":  "logo / animation / audio",
+                           "tag":  "branding",
+                           "pos":  [
+                                       430,
+                                       140
+                                   ],
+                           "size":  [
+                                        170,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "home",
+                           "type":  "frontend",
+                           "label":  "Home \u0026 secciones",
+                           "sublabel":  "For You / Near You / Discover",
+                           "tag":  "presentation",
+                           "pos":  [
+                                       430,
+                                       330
+                                   ],
+                           "size":  [
+                                        180,
+                                        80
+                                    ]
+                       },
+                       {
+                           "id":  "provider",
+                           "type":  "backend",
+                           "label":  "FeedProvider",
+                           "sublabel":  "feed state / refresh",
+                           "tag":  "ChangeNotifier",
+                           "pos":  [
+                                       665,
+                                       330
+                                   ],
+                           "size":  [
+                                        170,
+                                        80
+                                    ]
+                       },
+                       {
+                           "id":  "repository",
+                           "type":  "backend",
+                           "label":  "VideoPostsRepositoryImpl",
+                           "sublabel":  "domain / data source",
+                           "tag":  "domain boundary",
+                           "pos":  [
+                                       900,
+                                       330
+                                   ],
+                           "size":  [
+                                        180,
+                                        80
+                                    ]
+                       },
+                       {
+                           "id":  "source",
+                           "type":  "backend",
+                           "label":  "RapidApiDatasource",
+                           "sublabel":  "Dio Ã‚Â· mapeo Ã‚Â· fallback",
+                           "tag":  "infrastructure",
+                           "pos":  [
+                                       1135,
+                                       330
+                                   ],
+                           "size":  [
+                                        180,
+                                        80
+                                    ]
+                       },
+                       {
+                           "id":  "tikwm",
+                           "type":  "cloud",
+                           "label":  "TikWM",
+                           "sublabel":  "US feed Ãƒâ€šÃ‚Â· MX feed",
+                           "tag":  "HTTPS",
+                           "pos":  [
+                                       1135,
+                                       140
+                                   ],
+                           "size":  [
+                                        170,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "pixabay",
+                           "type":  "cloud",
+                           "label":  "Pixabay Videos",
+                           "sublabel":  "Discover Ã‚Â· fallback",
+                           "tag":  "HTTPS",
+                           "pos":  [
+                                       1135,
+                                       500
+                                   ],
+                           "size":  [
+                                        180,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "storage",
+                           "type":  "database",
+                           "label":  "SharedPreferences",
+                           "sublabel":  "favorites Ãƒâ€šÃ‚Â· video_{id}",
+                           "tag":  "local device",
+                           "pos":  [
+                                       665,
+                                       500
+                                   ],
+                           "size":  [
+                                        170,
+                                        76
+                                    ]
+                       }
+                   ],
+    "connections":  [
+                        {
+                            "id":  "launch",
+                            "from":  "person",
+                            "to":  "startup",
+                            "label":  "launch",
+                            "variant":  "emphasis",
+                            "labelDy":  -48
+                        },
+                        {
+                            "id":  "boot-to-splash",
+                            "from":  "startup",
+                            "to":  "splash",
+                            "label":  "runApp",
+                            "variant":  "emphasis",
+                            "fromSide":  "top",
+                            "toSide":  "left",
+                            "labelDy":  -24
+                        },
+                        {
+                            "id":  "splash-to-home",
+                            "from":  "splash",
+                            "to":  "home",
+                            "label":  "ready",
+                            "fromSide":  "bottom",
+                            "toSide":  "top",
+                            "labelDx":  54
+                        },
+                        {
+                            "id":  "home-to-feed",
+                            "from":  "home",
+                            "to":  "provider",
+                            "label":  "loadAll / refresh",
+                            "variant":  "emphasis",
+                            "labelDy":  -52
+                        },
+                        {
+                            "id":  "feed-to-repository",
+                            "from":  "provider",
+                            "to":  "repository",
+                            "label":  "section call",
+                            "labelDy":  -52
+                        },
+                        {
+                            "id":  "repo-to-source",
+                            "from":  "repository",
+                            "to":  "source",
+                            "label":  "datasource API",
+                            "labelDy":  -100, "labelDx": -95
+                        },
+                        {
+                            "id":  "source-tikwm",
+                            "from":  "source",
+                            "to":  "tikwm",
+                            "label":  "TikWM US / MX",
+                            "variant":  "emphasis",
+                            "fromSide":  "top",
+                            "toSide":  "left",
+                            "labelDy":  -24,
+                            "labelDx":  96
+                        },
+                        {
+                            "id":  "source-pixabay",
+                            "from":  "source",
+                            "to":  "pixabay",
+                            "label":  "Discover / fallback",
+                            "variant":  "emphasis",
+                            "fromSide":  "bottom",
+                            "toSide":  "left",
+                            "labelDy":  30
+                        },
+                        {
+                            "id":  "feed-favorites",
+                            "from":  "provider",
+                            "to":  "storage",
+                            "label":  "read IDs + video",
+                            "fromSide":  "bottom",
+                            "toSide":  "top",
+                            "labelDx":  100,
+                            "labelDy":  -74
+                        }
+                    ],
+    "cards":  [
+                  {
+                      "dot":  "cyan",
+                      "title":  "Arranque y presentaciÃƒÆ’Ã‚Â³n",
+                      "items":  [
+                                    "main() inicializa orientaciÃƒÆ’Ã‚Â³n vertical, SharedPreferences y dotenv; luego sincroniza el icono estacional.",
+                                    "SplashScreen precede Home; Home solicita loadAll() al FeedProvider."
+                                ]
+                  },
+                  {
+                      "dot":  "amber",
+                      "title":  "Rutas de contenido reales",
+                      "items":  [
+                                    "Para ti ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ TikWM region=US ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Pixabay si falla o no hay resultados.",
+                                    "Descubrir ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Pixabay Videos. Cerca de ti ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ TikWM region=MX ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ Pixabay regional."
+                                ]
+                  },
+                  {
+                      "dot":  "violet",
+                      "title":  "Estado y persistencia",
+                      "items":  [
+                                    "For You se carga primero; Near You, Discover y Favorites despuÃƒÆ’Ã‚Â©s.",
+                                    "Favoritos lee IDs y video_{id} en SharedPreferences; los resultados se deduplican antes de actualizar el feed."
+                                ]
+                  }
+              ]
+}
