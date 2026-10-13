@@ -34,12 +34,12 @@
 
 | 1. Splash Screen Estacional | 2. Feed "Para ti" | 3. Sección "Cerca de ti" |
 | :---: | :---: | :---: |
-| ![Splash Screen](/capturas/1.jpg) | ![Feed Para ti](/capturas/2.jpg) | ![Cerca de ti](/capturas/3.jpg) |
+| ![Splash Screen](/Practica04/toktik/capturas/1.jpg) | ![Feed Para ti](/Practica04/toktik/capturas/2.jpg) | ![Cerca de ti](/Practica04/toktik/capturas/3.jpg) |
 | *Pantalla de carga con animación y branding dinámico* | *Vista principal de videos verticales* | *Exploración de contenido local* |
 
 | 4. Explorar / Descubrir | 5. Favoritos |
 | :---: | :---: |
-| ![Descubrir](/capturas/4.jpg) | ![Favoritos](/capturas/5.jpg) |
+| ![Descubrir](/Practica04/toktik/capturas/4.jpg) | ![Favoritos](/Practica04/toktik/capturas/5.jpg) |
 | *Sección de descubrimientos multimedia* | *Gestión de videos guardados* |
 
 
