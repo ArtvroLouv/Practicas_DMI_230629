@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:widget_app/config/menu/menu_items.dart'; // Ajusta 'widget_app' si tu paquete se llama diferente
+import 'package:widgett_app/config/menu/menu_items.dart';// Ojo: en los imports de paquetes nunca va '/lib/' en medio
 
 class HomeScreen extends StatelessWidget {
   static const String name = 'home_screen';
@@ -28,16 +28,36 @@ class _HomeView extends StatelessWidget {
       itemBuilder: (context, index) {
         final menuItem = appMenuItems[index];
 
-        return ListTile(
-          leading: Icon(menuItem.icon, color: Theme.of(context).colorScheme.primary),
-          trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-          title: Text(menuItem.title),
-          subtitle: Text(menuItem.subTitle),
-          onTap: () {
-            // Navegación utilizando GoRouter
-            context.push(menuItem.link);
-          },
-        );
+        // Aquí usamos nuestro widget personalizado en lugar del ListTile plano
+        return _CustomListTile(menuItem: menuItem);
+      },
+    );
+  }
+}
+
+// Widget personalizado que te faltaba
+class _CustomListTile extends StatelessWidget {
+  const _CustomListTile({
+    required this.menuItem,
+  });
+
+  final MenuItem menuItem;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    return ListTile(
+      leading: Icon(menuItem.icon, color: colors.primary),
+      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+      title: Text(menuItem.title),
+      subtitle: Text(menuItem.subTitle),
+      onTap: () {
+        // Opción 1: Usando la ruta por su path (string)
+        context.push(menuItem.link);
+        
+        // Opción 2 (Alternativa con GoRouter usando el name de la ruta si lo prefieres):
+        // context.pushNamed(menuItem.link); 
       },
     );
   }
