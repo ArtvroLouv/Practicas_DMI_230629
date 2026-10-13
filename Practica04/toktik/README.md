@@ -8,6 +8,9 @@
 
 [Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica04/toktik/arquitectura_toktik_pro_final.html)
 
+
+[Diagrama de Providers](https://artvrolouv.github.io/Practicas_DMI_230629/Practica04/toktik/arquitectura_providers_toktik.html)
+
 [App en Appetize](https://appetize.io/app/b_i2wyf57f6nvg6gmyqnkw3ckdyy)
 
 ---
