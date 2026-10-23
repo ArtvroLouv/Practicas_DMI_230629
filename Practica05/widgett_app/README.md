@@ -3,7 +3,7 @@
 Aplicación desarrollada en Flutter para practicar el uso de widgets, navegación, estado global y personalización visual en un proyecto con Material 3.
 
 # Links
-[Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica05/widget_app/index.html)
+[Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica05/widgett_app/diagrama/index.html)
 
 ## Descripción
 
