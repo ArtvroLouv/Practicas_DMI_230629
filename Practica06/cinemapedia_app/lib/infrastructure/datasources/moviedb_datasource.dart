@@ -14,6 +14,7 @@ class MoviedbDatasource {
     ),
   );
 
+  @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     try {
       final response = await dio.get(
@@ -22,6 +23,9 @@ class MoviedbDatasource {
           'page': page,
         },
       );
+
+      final movieDBResponse = MovieDBResponse.fromJson(response.data);
+      
 
       final List<dynamic> results = response.data['results'];
 
@@ -33,3 +37,4 @@ class MoviedbDatasource {
     }
   }
 }
+
