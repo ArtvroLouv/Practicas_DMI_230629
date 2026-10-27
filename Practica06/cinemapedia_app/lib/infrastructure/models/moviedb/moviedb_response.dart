@@ -1,85 +1,54 @@
-class MovieMovieDB {
-    final bool adult;
-    final String backdropPath;
-    final List<int> genreIds;
-    final int id;
-    final String title;
-    final String originalLanguage;
-    final String originalTitle;
-    final String overview;
-    final double popularity;
-    final String posterPath;
-    final DateTime releaseDate;
-    final bool softcore;
-    final bool video;
-    final double voteAverage;
-    final int voteCount;
-  MovieMovieDB({
-        required this.adult,
-        required this.backdropPath,
-        required this.genreIds,
-        required this.id,
-        required this.title,
-        required this.originalLanguage,
-        required this.originalTitle,
-        required this.overview,
-        required this.popularity,
-        required this.posterPath,
-        required this.releaseDate,
-        required this.softcore,
-        required this.video,
-        required this.voteAverage,
-        required this.voteCount,
-    });
-    factory MovieMovieDB.fromJson(Map<String, dynamic> json) => MovieMovieDB(
-        adult: json["adult"],
-        backdropPath: json["backdrop_path"] ?? '',
-        genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
-        id: json["id"],
-        title: json["title"],
-        originalLanguage: json["original_language"],
-        originalTitle: json["original_title"],
-        overview: json["overview"],
-        popularity: json["popularity"]?.toDouble(),
-        posterPath: json["poster_path"],
-        releaseDate: DateTime.parse(json["release_date"]),
-        softcore: json["softcore"],
-        video: json["video"],
-        voteAverage: json["vote_average"]?.toDouble(),
-        voteCount: json["vote_count"],
+import 'movie_moviedb.dart';
+
+class MovieDbResponse {
+  MovieDbResponse({
+    required this.dates,
+    required this.page,
+    required this.results,
+    required this.totalPages,
+    required this.totalResults,
+  });
+
+  final Dates? dates;
+  final int page;
+  final List<MovieMovieDB> results;
+  final int totalPages;
+  final int totalResults;
+
+  factory MovieDbResponse.fromJson(Map<String, dynamic> json) {
+    final rawDates = json['dates'];
+    final rawResults = json['results'];
+
+    return MovieDbResponse(
+      dates: rawDates is Map
+          ? Dates.fromJson(Map<String, dynamic>.from(rawDates))
+          : null,
+      page: (json['page'] as num?)?.toInt() ?? 1,
+      results: rawResults is List
+          ? rawResults
+                .whereType<Map>()
+                .map(
+                  (movie) =>
+                      MovieMovieDB.fromJson(Map<String, dynamic>.from(movie)),
+                )
+                .toList()
+          : <MovieMovieDB>[],
+      totalPages: (json['total_pages'] as num?)?.toInt() ?? 0,
+      totalResults: (json['total_results'] as num?)?.toInt() ?? 0,
     );
-    Map<String, dynamic> toJson() => {
-        "adult": adult,
-        "backdrop_path": backdropPath,
-        "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
-        "id": id,
-        "title": title,
-        "original_language": originalLanguageValues.reverse[originalLanguage],
-        "original_title": originalTitle,
-        "overview": overview,
-        "popularity": popularity,
-        "poster_path": posterPath,
-        "release_date": "${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}",
-        "softcore": softcore,
-        "video": video,
-        "vote_average": voteAverage,
-        "vote_count": voteCount,
-    };
+  }
 }
-enum OriginalLanguage {
-    EN,
-    KO
-}
-final originalLanguageValues = EnumValues({
-    "en": OriginalLanguage.EN,
-    "ko": OriginalLanguage.KO
-});
-class EnumValues<T> {
-    Map<String, T> map;
-    late Map<T, String> reverseMap;
-    EnumValues(this.map);
-    Map<T, String> get reverse {
-            reverseMap = map.map((k, v) => MapEntry(v, k));
-            return reverseMap;
-    }
+
+class Dates {
+  Dates({required this.maximum, required this.minimum});
+
+  final DateTime maximum;
+  final DateTime minimum;
+
+  factory Dates.fromJson(Map<String, dynamic> json) => Dates(
+    maximum:
+        DateTime.tryParse(json['maximum'] as String? ?? '') ?? DateTime(1970),
+    minimum:
+        DateTime.tryParse(json['minimum'] as String? ?? '') ?? DateTime(1970),
+  );
 }

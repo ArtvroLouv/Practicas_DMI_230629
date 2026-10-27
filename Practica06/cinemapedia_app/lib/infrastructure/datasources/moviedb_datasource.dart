@@ -1,40 +1,43 @@
-
-import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:dio/dio.dart';
-import 'package:cinemapedia_app/config/constants/environment.dart';
 
-class MoviedbDatasource {
-  final Dio dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://api.themoviedb.org/3',
-      queryParameters: {
-        'api_key': Environment.theMovieDbKey,
-        'language': 'es-MX',
-      },
-    ),
-  );
+import 'package:cinemapedia_app/config/constants/environment.dart';
+import 'package:cinemapedia_app/domain/datasources/movies_datasource.dart';
+import 'package:cinemapedia_app/domain/entities/movie.dart';
+import 'package:cinemapedia_app/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia_app/infrastructure/models/moviedb/moviedb_response.dart';
+
+class MoviedbDatasource extends MoviesDatasource {
+  MoviedbDatasource({Dio? dio})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              baseUrl: 'https://api.themoviedb.org/3',
+              queryParameters: {
+                'api_key': Environment.theMovieDbKey,
+                'language': 'es-MX',
+              },
+            ),
+          );
+
+  final Dio _dio;
 
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    try {
-      final response = await dio.get(
-        '/movie/now_playing',
-        queryParameters: {
-          'page': page,
-        },
-      );
-
-      final movieDBResponse = MovieDBResponse.fromJson(response.data);
-      
-
-      final List<dynamic> results = response.data['results'];
-
-      // Aquí falta convertir los resultados JSON a objetos Movie.
-      return [];
-    } catch (e) {
-      print('Error al obtener películas en cartelera: $e');
-      return [];
+    if (page < 1) {
+      throw ArgumentError.value(page, 'page', 'Debe ser mayor que cero.');
     }
+
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/movie/now_playing',
+      queryParameters: {'page': page},
+    );
+    final data = response.data;
+    if (data == null) {
+      throw const FormatException('TMDB devolvió una respuesta vacía.');
+    }
+
+    final movieDbResponse = MovieDbResponse.fromJson(data);
+    return movieDbResponse.results.map(MovieMapper.movieDBToEntity).toList();
   }
 }
-

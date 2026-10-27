@@ -1,18 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:cinemapedia_app/presentations/screens/movies/home_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia_app/config/router/app_router.dart';
+import 'package:cinemapedia_app/config/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await dotenv.load(fileName: '.env');
-
-  runApp(
-    const ProviderScope(
-      child: MainApp(),
-    )
-  );
+  runApp(const ProviderScope(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -20,10 +15,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Cinemapedia',
-      home: const HomeScreen(),
+      theme: AppTheme().getTheme(),
+      routerConfig: appRouter,
     );
   }
 }

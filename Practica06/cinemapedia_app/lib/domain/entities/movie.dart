@@ -13,8 +13,6 @@ class Movie {
   final bool video;
   final double voteAverage;
   final int voteCount;
-
-
   Movie({
     required this.adult,
     required this.backdropPath,
