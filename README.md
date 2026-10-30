@@ -38,7 +38,7 @@ Practicas_DMI_230629/
 | 2 | [Mi Primer Aplicación Móvil con Flutter](/Practica%2002/)  | Codificar la app móvil en el framework de Flutter manejando Stateless y Stateful Widgets | 25 | 🟢 Concluida |
 | 3 | [Yes/No/Maybe App](/Practica03/yes_no_app/)  | Chat con API de Respuestas Automáticas | 30 | 🟢 Concluida |
 | 4 | [TokTik](/Practica04/toktik/)  | Aplicacion de Reproducción de videos verticales  | 30 | 🟢 Concluida |
-| 5 | [Widgett_app](/Practica05/widgett_app/)  | Aplicacion de Widgetts  | Pendiente | 🟢 Concluida |
+| 5 | [Widgett_app](/Practica05/widgett_app/)  | Aplicacion de Widgetts  | 40 | 🟢 Concluida |
 
 
 
