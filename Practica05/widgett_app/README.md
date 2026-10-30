@@ -17,6 +17,19 @@ Esta práctica consiste en una app de demostración que reúne varios ejemplos d
 - Explorar componentes visuales y UX con Material 3.
 - Implementar ejemplos reutilizables de pantalla y menú lateral.
 
+## Evidencias
+
+| Captura | Captura |
+| --- | --- |
+| <img src="evidencias/animated_container.png" alt="Contenedor animado" width="300"><br>**Contenedor animado** | <img src="evidencias/botones.png" alt="Botones" width="300"><br>**Botones** |
+| <img src="evidencias/cambiar_tema.png" alt="Cambio de tema" width="300"><br>**Cambio de tema** | <img src="evidencias/counter.png" alt="Contador" width="300"><br>**Contador** |
+| <img src="evidencias/dialogo.png" alt="Diálogo" width="300"><br>**Diálogo** | <img src="evidencias/indicador_de_progreso.png" alt="Indicador de progreso" width="300"><br>**Indicador de progreso** |
+| <img src="evidencias/inicio.png" alt="Inicio" width="300"><br>**Inicio** | <img src="evidencias/introducci%C3%B3n.png" alt="Introducción" width="300"><br>**Introducción** |
+| <img src="evidencias/main.png" alt="Pantalla principal" width="300"><br>**Main** | <img src="evidencias/mostrar_snackbar.png" alt="Mostrar snackbar" width="300"><br>**Mostrar snackbar** |
+| <img src="evidencias/scroll_infinito.png" alt="Scroll infinito" width="300"><br>**Scroll infinito** | <img src="evidencias/snackbar.png" alt="Snackbar" width="300"><br>**Snackbar** |
+| <img src="evidencias/tarjetas.png" alt="Tarjetas" width="300"><br>**Tarjetas** | <img src="evidencias/ui_controls.png" alt="Controles de interfaz" width="300"><br>**Controles de interfaz** |
+| <img src="evidencias/widget.png" alt="Widgets" width="300"><br>**Widgets** | |
+
 ## Funcionalidades
 
 - Contador con Riverpod
@@ -86,4 +99,3 @@ lib/
 ## Navegación
 
 La app cuenta con un menú lateral y rutas definidas para acceder a cada ejemplo de widget. Esto permite explorar las pantallas de una forma ordenada y modular.
-
