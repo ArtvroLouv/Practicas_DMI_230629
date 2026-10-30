@@ -24,12 +24,31 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
+    return _getMovies('/movie/now_playing', page: page);
+  }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    return _getMovies('/movie/popular', page: page);
+  }
+
+  @override
+  Future<List<Movie>> getUpcoming({int page = 1}) async {
+    return _getMovies('/movie/upcoming', page: page);
+  }
+
+  @override
+  Future<List<Movie>> getTopRated({int page = 1}) async {
+    return _getMovies('/movie/top_rated', page: page);
+  }
+
+  Future<List<Movie>> _getMovies(String endpoint, {required int page}) async {
     if (page < 1) {
       throw ArgumentError.value(page, 'page', 'Debe ser mayor que cero.');
     }
 
     final response = await _dio.get<Map<String, dynamic>>(
-      '/movie/now_playing',
+      endpoint,
       queryParameters: {'page': page},
     );
     final data = response.data;

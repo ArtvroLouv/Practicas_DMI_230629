@@ -22,5 +22,5 @@ class MovieMapper {
   );
 
   static String _imageUrl(String path) =>
-      path.isEmpty ? '' : '$_imageBaseUrl$path';
+      path.isEmpty ? 'no-poster' : '$_imageBaseUrl$path';
 }
