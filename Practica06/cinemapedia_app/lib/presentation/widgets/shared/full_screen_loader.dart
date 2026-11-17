@@ -1,20 +1,10 @@
+import 'package:cinemapedia_app/config/constants/app_strings.dart';
 import 'package:flutter/material.dart';
 
 class FullScreenLoader extends StatelessWidget {
-  const FullScreenLoader({super.key});
+  const FullScreenLoader({super.key, required this.strings});
 
-  static const _messages = [
-    'Cargando películas...',
-    'Preparando las palomitas...',
-    'Buscando los estrenos...',
-  ];
-
-  Stream<String> _loadingMessages() {
-    return Stream<String>.periodic(
-      const Duration(milliseconds: 1200),
-      (step) => _messages[step % _messages.length],
-    );
-  }
+  final AppStrings strings;
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +12,11 @@ class FullScreenLoader extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Espera un momento'),
+          Text(strings.waiting),
           const SizedBox(height: 10),
           const CircularProgressIndicator(strokeWidth: 2),
           const SizedBox(height: 10),
-          StreamBuilder<String>(
-            stream: _loadingMessages(),
-            builder: (context, snapshot) =>
-                Text(snapshot.data ?? 'Cargando...'),
-          ),
+          Text(strings.loading),
         ],
       ),
     );

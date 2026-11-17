@@ -1,5 +1,7 @@
 import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:cinemapedia_app/domain/repositories/movies_repository.dart';
+import 'package:cinemapedia_app/config/constants/app_country.dart';
+import 'package:cinemapedia_app/presentation/providers/country_provider.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/movies_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,13 +30,19 @@ abstract class MoviesNotifier extends AsyncNotifier<List<Movie>> {
   Future<List<Movie>> fetchMovies(
     MoviesRepository repository, {
     required int page,
+    required AppCountry country,
   });
 
   @override
   Future<List<Movie>> build() async {
+    final country = ref.watch(selectedCountryProvider);
     _currentPage = 1;
     _hasMorePages = true;
-    return fetchMovies(ref.watch(movieRepositoryProvider), page: _currentPage);
+    return fetchMovies(
+      ref.watch(movieRepositoryProvider),
+      page: _currentPage,
+      country: country,
+    );
   }
 
   Future<void> loadNextPage() async {
@@ -55,6 +63,7 @@ abstract class MoviesNotifier extends AsyncNotifier<List<Movie>> {
       final nextMovies = await fetchMovies(
         ref.read(movieRepositoryProvider),
         page: nextPage,
+        country: ref.read(selectedCountryProvider),
       );
       _currentPage = nextPage;
       _hasMorePages = nextMovies.isNotEmpty;
@@ -72,8 +81,13 @@ class NowPlayingMoviesNotifier extends MoviesNotifier {
   Future<List<Movie>> fetchMovies(
     MoviesRepository repository, {
     required int page,
+    required AppCountry country,
   }) {
-    return repository.getNowPlaying(page: page);
+    return repository.getNowPlaying(
+      page: page,
+      region: country.regionCode,
+      language: '${country.languageCode}-${country.regionCode}',
+    );
   }
 }
 
@@ -82,8 +96,13 @@ class PopularMoviesNotifier extends MoviesNotifier {
   Future<List<Movie>> fetchMovies(
     MoviesRepository repository, {
     required int page,
+    required AppCountry country,
   }) {
-    return repository.getPopular(page: page);
+    return repository.getPopular(
+      page: page,
+      region: country.regionCode,
+      language: '${country.languageCode}-${country.regionCode}',
+    );
   }
 }
 
@@ -92,8 +111,13 @@ class UpcomingMoviesNotifier extends MoviesNotifier {
   Future<List<Movie>> fetchMovies(
     MoviesRepository repository, {
     required int page,
+    required AppCountry country,
   }) {
-    return repository.getUpcoming(page: page);
+    return repository.getUpcoming(
+      page: page,
+      region: country.regionCode,
+      language: '${country.languageCode}-${country.regionCode}',
+    );
   }
 }
 
@@ -102,7 +126,12 @@ class TopRatedMoviesNotifier extends MoviesNotifier {
   Future<List<Movie>> fetchMovies(
     MoviesRepository repository, {
     required int page,
+    required AppCountry country,
   }) {
-    return repository.getTopRated(page: page);
+    return repository.getTopRated(
+      page: page,
+      region: country.regionCode,
+      language: '${country.languageCode}-${country.regionCode}',
+    );
   }
 }

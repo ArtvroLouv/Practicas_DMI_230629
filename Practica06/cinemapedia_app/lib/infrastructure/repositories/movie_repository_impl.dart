@@ -8,22 +8,62 @@ class MovieRepositoryImpl extends MoviesRepository {
   MovieRepositoryImpl(this.datasource);
 
   @override
-  Future<List<Movie>> getNowPlaying({int page = 1}) {
-    return datasource.getNowPlaying(page: page);
+  Future<List<Movie>> getNowPlaying({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return datasource.getNowPlaying(
+      page: page,
+      region: region,
+      language: language,
+    );
   }
 
   @override
-  Future<List<Movie>> getPopular({int page = 1}) {
-    return datasource.getPopular(page: page);
+  Future<List<Movie>> getPopular({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return datasource.getPopular(
+      page: page,
+      region: region,
+      language: language,
+    );
   }
 
   @override
-  Future<List<Movie>> getUpcoming({int page = 1}) {
-    return datasource.getUpcoming(page: page);
+  Future<List<Movie>> getUpcoming({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return datasource.getUpcoming(
+      page: page,
+      region: region,
+      language: language,
+    );
   }
 
   @override
-  Future<List<Movie>> getTopRated({int page = 1}) {
-    return datasource.getTopRated(page: page);
+  Future<List<Movie>> getTopRated({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return datasource.getTopRated(
+      page: page,
+      region: region,
+      language: language,
+    );
+  }
+
+  @override
+  Future<String?> getMovieCertification({
+    required int movieId,
+    required String region,
+  }) {
+    return datasource.getMovieCertification(movieId: movieId, region: region);
   }
 }
