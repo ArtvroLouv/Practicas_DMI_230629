@@ -1,0 +1,233 @@
+import 'package:dio/dio.dart';
+
+import 'package:cinemapedia_app/config/constants/environment.dart';
+import 'package:cinemapedia_app/domain/datasources/movies_datasource.dart';
+import 'package:cinemapedia_app/domain/entities/movie.dart';
+import 'package:cinemapedia_app/domain/entities/movie_details.dart';
+import 'package:cinemapedia_app/domain/entities/movie_genre.dart';
+import 'package:cinemapedia_app/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia_app/infrastructure/models/moviedb/movie_details_moviedb.dart';
+import 'package:cinemapedia_app/infrastructure/models/moviedb/movie_genre_moviedb.dart';
+import 'package:cinemapedia_app/infrastructure/models/moviedb/moviedb_response.dart';
+
+class MoviedbDatasource extends MoviesDatasource {
+  MoviedbDatasource({Dio? dio})
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              baseUrl: 'https://api.themoviedb.org/3',
+              queryParameters: {'api_key': Environment.theMovieDbKey},
+            ),
+          );
+
+  final Dio _dio;
+  final Map<(int, String), Future<String?>> _certificationCache = {};
+
+  @override
+  Future<List<Movie>> getNowPlaying({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return _getMovies(
+      '/movie/now_playing',
+      page: page,
+      region: region,
+      language: language,
+    );
+  }
+
+  @override
+  Future<List<Movie>> getPopular({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return _getMovies(
+      '/movie/popular',
+      page: page,
+      region: region,
+      language: language,
+    );
+  }
+
+  @override
+  Future<List<Movie>> getUpcoming({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return _getMovies(
+      '/movie/upcoming',
+      page: page,
+      region: region,
+      language: language,
+    );
+  }
+
+  @override
+  Future<List<Movie>> getTopRated({
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    return _getMovies(
+      '/movie/top_rated',
+      page: page,
+      region: region,
+      language: language,
+    );
+  }
+
+  @override
+  Future<List<Movie>> searchMovies({
+    required String query,
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    if (query.trim().isEmpty) return Future.value(const []);
+    return _getMovies(
+      '/search/movie',
+      page: page,
+      region: region,
+      language: language,
+      extraQueryParameters: {'query': query.trim(), 'include_adult': false},
+    );
+  }
+
+  @override
+  Future<List<MovieGenre>> getGenres({String language = 'es-MX'}) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/genre/movie/list',
+      queryParameters: {'language': language},
+    );
+    final results = response.data?['genres'];
+    if (results is! List) {
+      throw const FormatException(
+        'TMDB devolvió una lista de géneros inválida.',
+      );
+    }
+
+    return results
+        .whereType<Map>()
+        .map(
+          (genre) => MovieGenreMovieDB.fromJson(
+            Map<String, dynamic>.from(genre),
+          ).toEntity(),
+        )
+        .toList();
+  }
+
+  @override
+  Future<List<Movie>> getMoviesByGenre({
+    required int genreId,
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    if (genreId < 1) {
+      throw ArgumentError.value(genreId, 'genreId', 'Debe ser mayor que cero.');
+    }
+    return _getMovies(
+      '/discover/movie',
+      page: page,
+      region: region,
+      language: language,
+      extraQueryParameters: {'with_genres': genreId},
+    );
+  }
+
+  @override
+  Future<MovieDetails> getMovieDetails({
+    required int movieId,
+    String language = 'es-MX',
+  }) async {
+    if (movieId < 1) {
+      throw ArgumentError.value(movieId, 'movieId', 'Debe ser mayor que cero.');
+    }
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/movie/$movieId',
+      queryParameters: {'language': language},
+    );
+    final data = response.data;
+    if (data == null) {
+      throw const FormatException('TMDB devolvió una respuesta vacía.');
+    }
+    return MovieDetailsMovieDB.fromJson(data).toEntity();
+  }
+
+  Future<List<Movie>> _getMovies(
+    String endpoint, {
+    required int page,
+    required String region,
+    required String language,
+    Map<String, dynamic> extraQueryParameters = const {},
+  }) async {
+    if (page < 1) {
+      throw ArgumentError.value(page, 'page', 'Debe ser mayor que cero.');
+    }
+
+    final response = await _dio.get<Map<String, dynamic>>(
+      endpoint,
+      queryParameters: {
+        'page': page,
+        'region': region,
+        'language': language,
+        ...extraQueryParameters,
+      },
+    );
+    final data = response.data;
+    if (data == null) {
+      throw const FormatException('TMDB devolvió una respuesta vacía.');
+    }
+
+    final movieDbResponse = MovieDbResponse.fromJson(data);
+    return movieDbResponse.results.map(MovieMapper.movieDBToEntity).toList();
+  }
+
+  @override
+  Future<String?> getMovieCertification({
+    required int movieId,
+    required String region,
+  }) {
+    final key = (movieId, region);
+    return _certificationCache.putIfAbsent(key, () async {
+      try {
+        return await _fetchCertification(movieId: movieId, region: region);
+      } catch (_) {
+        _certificationCache.remove(key);
+        rethrow;
+      }
+    });
+  }
+
+  Future<String?> _fetchCertification({
+    required int movieId,
+    required String region,
+  }) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/movie/$movieId/release_dates',
+    );
+    final countries = response.data?['results'];
+    if (countries is! List) return null;
+
+    for (final country in countries.whereType<Map>()) {
+      if (country['iso_3166_1'] != region) continue;
+
+      final releases = country['release_dates'];
+      if (releases is! List) return null;
+
+      for (final release in releases.whereType<Map>()) {
+        final certification = release['certification'];
+        if (certification is String && certification.trim().isNotEmpty) {
+          return certification.trim();
+        }
+      }
+      return null;
+    }
+
+    return null;
+  }
+}

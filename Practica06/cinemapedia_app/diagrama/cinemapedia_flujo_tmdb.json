@@ -1,0 +1,234 @@
+{
+    "schema_version":  1,
+    "diagram_type":  "architecture",
+    "meta":  {
+                 "title":  "Cinemapedia - arquitectura de consulta de peliculas",
+                 "output":  "diagrama/cinemapedia_flujo_tmdb.html",
+                 "viewBox":  [
+                                 1200,
+                                 560
+                             ],
+                 "quality_profile":  "showcase",
+                 "views":  [
+                               {
+                                   "id":  "layers",
+                                   "label":  "Capas de la aplicacion",
+                                   "focus":  [
+                                                 "provider",
+                                                 "contract",
+                                                 "repository",
+                                                 "datasource",
+                                                 "tmdb"
+                                             ],
+                                   "note":  "Capas y dependencias desde la aplicacion hasta el servicio externo."
+                               },
+                               {
+                                   "id":  "data",
+                                   "label":  "Modelos y entidades",
+                                   "focus":  [
+                                                 "datasource",
+                                                 "models",
+                                                 "entities",
+                                                 "contract"
+                                             ],
+                                   "note":  "La infraestructura convierte JSON de TMDB a entidades del dominio."
+                               },
+                               {
+                                   "id":  "config",
+                                   "label":  "Configuracion externa",
+                                   "focus":  [
+                                                 "datasource",
+                                                 "tmdb",
+                                                 "models"
+                                             ],
+                                   "note":  "La API key se lee del entorno y Dio consulta TMDB directamente."
+                               }
+                           ]
+             },
+    "components":  [
+                       {
+                           "id":  "provider",
+                           "type":  "backend",
+                           "label":  "Riverpod providers",
+                           "sublabel":  "AsyncNotifier / FutureProvider",
+                           "tag":  "presentation",
+                           "pos":  [
+                                       55,
+                                       145
+                                   ],
+                           "size":  [
+                                        160,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "contract",
+                           "type":  "backend",
+                           "label":  "MoviesRepository",
+                           "sublabel":  "contrato del dominio",
+                           "tag":  "domain",
+                           "pos":  [
+                                       290,
+                                       145
+                                   ],
+                           "size":  [
+                                        160,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "repository",
+                           "type":  "backend",
+                           "label":  "MovieRepositoryImpl",
+                           "sublabel":  "implementa el contrato",
+                           "tag":  "infrastructure",
+                           "pos":  [
+                                       525,
+                                       145
+                                   ],
+                           "size":  [
+                                        170,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "datasource",
+                           "type":  "backend",
+                           "label":  "MoviedbDatasource + Dio",
+                           "sublabel":  "HTTP, endpoints, API key from .env",
+                           "tag":  "infrastructure",
+                           "pos":  [
+                                       770,
+                                       145
+                                   ],
+                           "size":  [
+                                        185,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "tmdb",
+                           "type":  "cloud",
+                           "label":  "The Movie Database",
+                           "sublabel":  "API REST v3",
+                           "tag":  "servicio externo",
+                           "pos":  [
+                                       1010,
+                                       145
+                                   ],
+                           "size":  [
+                                        165,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "entities",
+                           "type":  "backend",
+                           "label":  "Movie / MovieDetails",
+                           "sublabel":  "entidades del dominio",
+                           "tag":  "domain",
+                           "pos":  [
+                                       290,
+                                       350
+                                   ],
+                           "size":  [
+                                        175,
+                                        76
+                                    ]
+                       },
+                       {
+                           "id":  "models",
+                           "type":  "backend",
+                           "label":  "Modelos TMDB + mapper",
+                           "sublabel":  "JSON a entidades",
+                           "tag":  "infrastructure",
+                           "pos":  [
+                                       770,
+                                       350
+                                   ],
+                           "size":  [
+                                        185,
+                                        76
+                                    ]
+                       }
+                   ],
+    "connections":  [
+                        {
+                            "id":  "provider-contract",
+                            "from":  "provider",
+                            "to":  "contract",
+                            "label":  "consume operaciones",
+                            "variant":  "emphasis",
+                            "labelDy":  70
+                        },
+                        {
+                            "id":  "implementation-contract",
+                            "from":  "contract",
+                            "to":  "repository",
+                            "label":  "implemented by",
+                            "variant":  "default",
+                            "labelDy":  70
+                        },
+                        {
+                            "id":  "implementation-datasource",
+                            "from":  "repository",
+                            "to":  "datasource",
+                            "label":  "delega consultas",
+                            "labelDy":  70
+                        },
+                        {
+                            "id":  "datasource-tmdb",
+                            "from":  "datasource",
+                            "to":  "tmdb",
+                            "label":  "Dio: HTTPS + JSON",
+                            "variant":  "emphasis",
+                            "labelDy":  70
+                        },
+                        {
+                            "id":  "datasource-models",
+                            "from":  "datasource",
+                            "to":  "models",
+                            "label":  "valida y transforma",
+                            "fromSide":  "bottom",
+                            "toSide":  "top",
+                            "labelDy":  30
+                        },
+                        {
+                            "id":  "models-entities",
+                            "from":  "models",
+                            "to":  "entities",
+                            "label":  "mapea a Movie",
+                            "variant":  "default"
+                        },
+                        {
+                            "id":  "entities-contract",
+                            "from":  "entities",
+                            "to":  "contract",
+                            "label":  "tipos de retorno",
+                            "fromSide":  "top",
+                            "toSide":  "bottom",
+                            "variant":  "dashed"
+                        }
+                    ],
+    "cards":  [
+                  {
+                      "dot":  "cyan",
+                      "title":  "Integracion con TMDB",
+                      "items":  [
+                                    "Base URL: https://api.themoviedb.org/3",
+                                    "Catalogos: /movie/now_playing, /movie/popular, /movie/upcoming y /movie/top_rated",
+                                    "Busqueda y generos: /search/movie, /genre/movie/list y /discover/movie",
+                                    "Detalle y clasificacion: /movie/{id} y /movie/{id}/release_dates"
+                                ]
+                  },
+                  {
+                      "dot":  "amber",
+                      "title":  "Configuracion y autoria",
+                      "items":  [
+                                    "Region e idioma vienen del pais seleccionado.",
+                                    "Provider crea MovieRepositoryImpl(MoviedbDatasource()).",
+                                    "Autor: José Arturo Garcia Goonzález"
+                                ]
+                  }
+              ]
+}
