@@ -13,7 +13,7 @@ guardar favoritos y cambiar el idioma y la región de la consulta.
 
 ## Links
 
-[Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica06/cinemapedia_app/cinemapedia_flujo_tmbd.html)
+[Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica06/cinemapedia_app/diagrama/cinemapedia_flujo_tmbd.html)
 
 
 [App en Appetize](https://appetize.io/app/b_dpkqmqrsyxactl4yjlaajrx4me)
