@@ -16,7 +16,7 @@ guardar favoritos y cambiar el idioma y la región de la consulta.
 [Arquitectura](https://artvrolouv.github.io/Practicas_DMI_230629/Practica06/cinemapedia_app/diagrama/cinemapedia_flujo_tmdb.html)
 
 
-[App en Appetize](https://appetize.io/app/b_dpkqmqrsyxactl4yjlaajrx4me)
+[App en Appetize](https://appetize.io/app/b_d3tadywrvi2rn34o23efcz4ice)
 
 
 ## Funcionalidades
