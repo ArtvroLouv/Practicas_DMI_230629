@@ -1,12 +1,14 @@
 import 'package:cinemapedia_app/config/constants/app_country.dart';
 import 'package:cinemapedia_app/config/constants/app_strings.dart';
 import 'package:cinemapedia_app/presentation/providers/country_provider.dart';
+import 'package:cinemapedia_app/config/helpers/movie_load_error_message.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/initial_loading_provider.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/movies_providers.dart';
 import 'package:cinemapedia_app/presentation/providers/movies/movies_slideshow_provider.dart';
 import 'package:cinemapedia_app/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -27,10 +29,18 @@ class HomeScreen extends ConsumerWidget {
         popularState.hasError ||
         upcomingState.hasError ||
         topRatedState.hasError;
+    final loadError =
+        nowPlayingState.error ??
+        popularState.error ??
+        upcomingState.error ??
+        topRatedState.error;
 
     return Scaffold(
       drawer: _CountryDrawer(country: country, strings: strings),
-      bottomNavigationBar: CustomBottomNavigation(strings: strings),
+      bottomNavigationBar: CustomBottomNavigation(
+        strings: strings,
+        selectedIndex: 0,
+      ),
       body: Builder(
         builder: (scaffoldContext) => CustomScrollView(
           slivers: [
@@ -42,6 +52,7 @@ class HomeScreen extends ConsumerWidget {
               title: CustomAppbar(
                 strings: strings,
                 onMenuPressed: () => Scaffold.of(scaffoldContext).openDrawer(),
+                onSearchPressed: () => context.push('/search'),
               ),
             ),
             if (isLoading)
@@ -58,7 +69,7 @@ class HomeScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(strings.loadError),
+                        Text(movieLoadErrorMessage(loadError, strings)),
                         const SizedBox(height: 12),
                         FilledButton(
                           onPressed: () {

@@ -3,7 +3,11 @@ import 'package:dio/dio.dart';
 import 'package:cinemapedia_app/config/constants/environment.dart';
 import 'package:cinemapedia_app/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia_app/domain/entities/movie.dart';
+import 'package:cinemapedia_app/domain/entities/movie_details.dart';
+import 'package:cinemapedia_app/domain/entities/movie_genre.dart';
 import 'package:cinemapedia_app/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia_app/infrastructure/models/moviedb/movie_details_moviedb.dart';
+import 'package:cinemapedia_app/infrastructure/models/moviedb/movie_genre_moviedb.dart';
 import 'package:cinemapedia_app/infrastructure/models/moviedb/moviedb_response.dart';
 
 class MoviedbDatasource extends MoviesDatasource {
@@ -76,11 +80,90 @@ class MoviedbDatasource extends MoviesDatasource {
     );
   }
 
+  @override
+  Future<List<Movie>> searchMovies({
+    required String query,
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    if (query.trim().isEmpty) return Future.value(const []);
+    return _getMovies(
+      '/search/movie',
+      page: page,
+      region: region,
+      language: language,
+      extraQueryParameters: {'query': query.trim(), 'include_adult': false},
+    );
+  }
+
+  @override
+  Future<List<MovieGenre>> getGenres({String language = 'es-MX'}) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/genre/movie/list',
+      queryParameters: {'language': language},
+    );
+    final results = response.data?['genres'];
+    if (results is! List) {
+      throw const FormatException(
+        'TMDB devolvió una lista de géneros inválida.',
+      );
+    }
+
+    return results
+        .whereType<Map>()
+        .map(
+          (genre) => MovieGenreMovieDB.fromJson(
+            Map<String, dynamic>.from(genre),
+          ).toEntity(),
+        )
+        .toList();
+  }
+
+  @override
+  Future<List<Movie>> getMoviesByGenre({
+    required int genreId,
+    int page = 1,
+    String region = 'MX',
+    String language = 'es-MX',
+  }) {
+    if (genreId < 1) {
+      throw ArgumentError.value(genreId, 'genreId', 'Debe ser mayor que cero.');
+    }
+    return _getMovies(
+      '/discover/movie',
+      page: page,
+      region: region,
+      language: language,
+      extraQueryParameters: {'with_genres': genreId},
+    );
+  }
+
+  @override
+  Future<MovieDetails> getMovieDetails({
+    required int movieId,
+    String language = 'es-MX',
+  }) async {
+    if (movieId < 1) {
+      throw ArgumentError.value(movieId, 'movieId', 'Debe ser mayor que cero.');
+    }
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/movie/$movieId',
+      queryParameters: {'language': language},
+    );
+    final data = response.data;
+    if (data == null) {
+      throw const FormatException('TMDB devolvió una respuesta vacía.');
+    }
+    return MovieDetailsMovieDB.fromJson(data).toEntity();
+  }
+
   Future<List<Movie>> _getMovies(
     String endpoint, {
     required int page,
     required String region,
     required String language,
+    Map<String, dynamic> extraQueryParameters = const {},
   }) async {
     if (page < 1) {
       throw ArgumentError.value(page, 'page', 'Debe ser mayor que cero.');
@@ -88,7 +171,12 @@ class MoviedbDatasource extends MoviesDatasource {
 
     final response = await _dio.get<Map<String, dynamic>>(
       endpoint,
-      queryParameters: {'page': page, 'region': region, 'language': language},
+      queryParameters: {
+        'page': page,
+        'region': region,
+        'language': language,
+        ...extraQueryParameters,
+      },
     );
     final data = response.data;
     if (data == null) {

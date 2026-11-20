@@ -6,10 +6,12 @@ class CustomAppbar extends StatelessWidget {
     super.key,
     required this.strings,
     required this.onMenuPressed,
+    required this.onSearchPressed,
   });
 
   final AppStrings strings;
   final VoidCallback onMenuPressed;
+  final VoidCallback onSearchPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,11 @@ class CustomAppbar extends StatelessWidget {
               ),
             ),
             const Spacer(),
+            IconButton(
+              onPressed: onSearchPressed,
+              tooltip: strings.searchMovies,
+              icon: const Icon(Icons.search_rounded),
+            ),
             Text(
               strings.country.flag,
               style: const TextStyle(fontSize: 22),

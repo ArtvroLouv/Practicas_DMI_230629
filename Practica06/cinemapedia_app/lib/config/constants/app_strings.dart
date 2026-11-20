@@ -97,6 +97,33 @@ class AppStrings {
     AppCountry.germany => 'Filme konnten nicht geladen werden.',
   };
 
+  String get tmdbKeyMissing => switch (country) {
+    AppCountry.usa =>
+      'Add a valid TMDB key to THE_MOVIEDB_KEY in the .env file, then restart the app.',
+    AppCountry.mexico =>
+      'Agrega una clave válida de TMDB en THE_MOVIEDB_KEY dentro de .env y reinicia la app.',
+    AppCountry.germany =>
+      'Füge einen gültigen TMDB-Schlüssel in THE_MOVIEDB_KEY in der .env-Datei ein und starte die App neu.',
+  };
+
+  String get tmdbKeyInvalid => switch (country) {
+    AppCountry.usa =>
+      'TMDB rejected the key. Check THE_MOVIEDB_KEY in .env and restart the app.',
+    AppCountry.mexico =>
+      'TMDB rechazó la clave. Revisa THE_MOVIEDB_KEY en .env y reinicia la app.',
+    AppCountry.germany =>
+      'TMDB hat den Schlüssel abgelehnt. Prüfe THE_MOVIEDB_KEY in .env und starte die App neu.',
+  };
+
+  String get connectionError => switch (country) {
+    AppCountry.usa =>
+      'Could not connect to TMDB. Check your internet connection and retry.',
+    AppCountry.mexico =>
+      'No se pudo conectar con TMDB. Revisa tu conexión a internet e inténtalo de nuevo.',
+    AppCountry.germany =>
+      'Keine Verbindung zu TMDB. Prüfe deine Internetverbindung und versuche es erneut.',
+  };
+
   String get retry => switch (country) {
     AppCountry.usa => 'Retry',
     AppCountry.mexico => 'Reintentar',
@@ -137,5 +164,83 @@ class AppStrings {
     AppCountry.usa => 'Loading movies...',
     AppCountry.mexico => 'Cargando películas...',
     AppCountry.germany => 'Filme werden geladen...',
+  };
+
+  String get searchMovies => switch (country) {
+    AppCountry.usa => 'Search movies',
+    AppCountry.mexico => 'Buscar películas',
+    AppCountry.germany => 'Filme suchen',
+  };
+
+  String get searchHint => switch (country) {
+    AppCountry.usa => 'Movie title',
+    AppCountry.mexico => 'Nombre de la película',
+    AppCountry.germany => 'Filmtitel',
+  };
+
+  String get noSearchResults => switch (country) {
+    AppCountry.usa => 'No movies match your search.',
+    AppCountry.mexico => 'No hay películas con esa búsqueda.',
+    AppCountry.germany => 'Keine Filme gefunden.',
+  };
+
+  String get genresTitle => switch (country) {
+    AppCountry.usa => 'Genres',
+    AppCountry.mexico => 'Géneros',
+    AppCountry.germany => 'Genres',
+  };
+
+  String get selectGenre => switch (country) {
+    AppCountry.usa => 'Choose a genre to explore.',
+    AppCountry.mexico => 'Elige un género para explorar.',
+    AppCountry.germany => 'Wähle ein Genre zum Entdecken.',
+  };
+
+  String get overview => switch (country) {
+    AppCountry.usa => 'Overview',
+    AppCountry.mexico => 'Sinopsis',
+    AppCountry.germany => 'Handlung',
+  };
+
+  String get noOverview => switch (country) {
+    AppCountry.usa => 'No overview is available.',
+    AppCountry.mexico => 'Sin sinopsis disponible.',
+    AppCountry.germany => 'Keine Handlung verfügbar.',
+  };
+
+  String get favoriteSaveError => switch (country) {
+    AppCountry.usa => 'Could not update your favorites.',
+    AppCountry.mexico => 'No se pudieron actualizar tus favoritos.',
+    AppCountry.germany => 'Favoriten konnten nicht aktualisiert werden.',
+  };
+
+  String get runtime => switch (country) {
+    AppCountry.usa => 'min',
+    AppCountry.mexico => 'min',
+    AppCountry.germany => 'Min.',
+  };
+
+  String get addFavorite => switch (country) {
+    AppCountry.usa => 'Add to favorites',
+    AppCountry.mexico => 'Agregar a favoritos',
+    AppCountry.germany => 'Zu Favoriten hinzufügen',
+  };
+
+  String get removeFavorite => switch (country) {
+    AppCountry.usa => 'Remove from favorites',
+    AppCountry.mexico => 'Quitar de favoritos',
+    AppCountry.germany => 'Aus Favoriten entfernen',
+  };
+
+  String get favoritesEmpty => switch (country) {
+    AppCountry.usa => 'Your favorite movies will appear here.',
+    AppCountry.mexico => 'Tus películas favoritas aparecerán aquí.',
+    AppCountry.germany => 'Deine Lieblingsfilme erscheinen hier.',
+  };
+
+  String get detailsError => switch (country) {
+    AppCountry.usa => 'Could not load movie details.',
+    AppCountry.mexico => 'No se pudieron cargar los detalles.',
+    AppCountry.germany => 'Filmdetails konnten nicht geladen werden.',
   };
 }

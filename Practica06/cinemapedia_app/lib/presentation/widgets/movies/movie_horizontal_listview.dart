@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia_app/config/helpers/human_formats.dart';
 import 'package:cinemapedia_app/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MovieHorizontalListview extends StatefulWidget {
   const MovieHorizontalListview({
@@ -61,8 +62,13 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
               itemCount: widget.movies.length,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) =>
-                  FadeInRight(child: _MovieCard(movie: widget.movies[index])),
+              itemBuilder: (context, index) => FadeInRight(
+                child: _MovieCard(
+                  movie: widget.movies[index],
+                  onTap: () =>
+                      context.push('/movie/${widget.movies[index].id}'),
+                ),
+              ),
             ),
           ),
         ],
@@ -72,89 +78,96 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
 }
 
 class _MovieCard extends StatelessWidget {
-  const _MovieCard({required this.movie});
+  const _MovieCard({required this.movie, required this.onTap});
 
   final Movie movie;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: movie.posterPath.isEmpty || movie.posterPath == 'no-poster'
-                ? const SizedBox(
-                    width: 150,
-                    height: 225,
-                    child: ColoredBox(
-                      color: Colors.black12,
-                      child: Center(child: Icon(Icons.movie_outlined)),
-                    ),
-                  )
-                : Image.network(
-                    movie.posterPath,
-                    width: 150,
-                    height: 225,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const SizedBox(
-                          width: 150,
-                          height: 225,
-                          child: ColoredBox(
-                            color: Colors.black12,
-                            child: Center(
-                              child: Icon(Icons.broken_image_outlined),
-                            ),
-                          ),
-                        ),
-                    loadingBuilder: (context, child, loadingProgress) =>
-                        loadingProgress == null
-                        ? FadeIn(child: child)
-                        : const SizedBox(
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 150,
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: movie.posterPath.isEmpty || movie.posterPath == 'no-poster'
+                  ? const SizedBox(
+                      width: 150,
+                      height: 225,
+                      child: ColoredBox(
+                        color: Colors.black12,
+                        child: Center(child: Icon(Icons.movie_outlined)),
+                      ),
+                    )
+                  : Image.network(
+                      movie.posterPath,
+                      width: 150,
+                      height: 225,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox(
                             width: 150,
                             height: 225,
-                            child: Center(
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                            child: ColoredBox(
+                              color: Colors.black12,
+                              child: Center(
+                                child: Icon(Icons.broken_image_outlined),
+                              ),
                             ),
                           ),
-                  ),
-          ),
-          const SizedBox(height: 5),
-          SizedBox(
-            width: 150,
-            child: Text(
-              movie.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: textStyles.titleSmall,
+                      loadingBuilder: (context, child, loadingProgress) =>
+                          loadingProgress == null
+                          ? FadeIn(child: child)
+                          : const SizedBox(
+                              width: 150,
+                              height: 225,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            ),
+                    ),
             ),
-          ),
-          SizedBox(
-            width: 150,
-            child: Row(
-              children: [
-                Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
-                const SizedBox(width: 3),
-                Text(
-                  movie.voteAverage.toStringAsFixed(1),
-                  style: textStyles.bodyMedium?.copyWith(
-                    color: Colors.yellow.shade800,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  HumanFormats.number(movie.popularity),
-                  style: textStyles.bodySmall,
-                ),
-              ],
+            const SizedBox(height: 5),
+            SizedBox(
+              width: 150,
+              child: Text(
+                movie.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textStyles.titleSmall,
+              ),
             ),
-          ),
-        ],
+            SizedBox(
+              width: 150,
+              child: Row(
+                children: [
+                  Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
+                  const SizedBox(width: 3),
+                  Text(
+                    movie.voteAverage.toStringAsFixed(1),
+                    style: textStyles.bodyMedium?.copyWith(
+                      color: Colors.yellow.shade800,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    HumanFormats.number(movie.popularity),
+                    style: textStyles.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -29,4 +29,43 @@ class Movie {
     required this.voteAverage,
     required this.voteCount,
   });
+
+  factory Movie.fromJson(Map<String, dynamic> json) => Movie(
+    adult: json['adult'] as bool? ?? false,
+    backdropPath: json['backdropPath'] as String? ?? '',
+    genreIds: (json['genreIds'] as List? ?? const [])
+        .whereType<num>()
+        .map((id) => id.toInt())
+        .toList(),
+    id: (json['id'] as num?)?.toInt() ?? 0,
+    originalLanguage: json['originalLanguage'] as String? ?? '',
+    originalTitle: json['originalTitle'] as String? ?? '',
+    overview: json['overview'] as String? ?? '',
+    popularity: (json['popularity'] as num?)?.toDouble() ?? 0,
+    posterPath: json['posterPath'] as String? ?? '',
+    releaseDate:
+        DateTime.tryParse(json['releaseDate'] as String? ?? '') ??
+        DateTime(1970),
+    title: json['title'] as String? ?? '',
+    video: json['video'] as bool? ?? false,
+    voteAverage: (json['voteAverage'] as num?)?.toDouble() ?? 0,
+    voteCount: (json['voteCount'] as num?)?.toInt() ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    'adult': adult,
+    'backdropPath': backdropPath,
+    'genreIds': genreIds,
+    'id': id,
+    'originalLanguage': originalLanguage,
+    'originalTitle': originalTitle,
+    'overview': overview,
+    'popularity': popularity,
+    'posterPath': posterPath,
+    'releaseDate': releaseDate.toIso8601String(),
+    'title': title,
+    'video': video,
+    'voteAverage': voteAverage,
+    'voteCount': voteCount,
+  };
 }
